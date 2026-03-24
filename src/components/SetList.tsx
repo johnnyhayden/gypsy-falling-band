@@ -1,11 +1,6 @@
 import { setListCategories } from "@/lib/data";
 
 const icons = [
-  // Microphone for Duets
-  <svg key="mic" className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 1a4 4 0 00-4 4v6a4 4 0 008 0V5a4 4 0 00-4-4z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 10v1a7 7 0 01-14 0v-1M12 18v4m-3 0h6" />
-  </svg>,
   // Vinyl for Mac
   <svg key="vinyl" className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <circle cx="12" cy="12" r="10" strokeWidth={1.5} />
@@ -17,6 +12,11 @@ const icons = [
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 18l-6 3 3-6 11-11 3 3L9 18z" />
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.5 5.5l4 4" />
     <circle cx="9.5" cy="14.5" r="1.5" strokeWidth={1.5} />
+  </svg>,
+  // Microphone for Duets
+  <svg key="mic" className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 1a4 4 0 00-4 4v6a4 4 0 008 0V5a4 4 0 00-4-4z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 10v1a7 7 0 01-14 0v-1M12 18v4m-3 0h6" />
   </svg>,
 ];
 

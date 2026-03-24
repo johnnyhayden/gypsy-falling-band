@@ -7,15 +7,6 @@ export const navLinks = [
 
 export const setListCategories = [
   {
-    title: "The Duets",
-    description: "Where two legends collide",
-    songs: [
-      "Stop Draggin' My Heart Around",
-      "Insider",
-      "I Will Run To You",
-    ],
-  },
-  {
     title: "Mac Staples",
     description: "The Fleetwood Mac canon",
     songs: [
@@ -37,6 +28,15 @@ export const setListCategories = [
       "Runnin' Down a Dream",
       "I Won't Back Down",
       "Learning to Fly",
+    ],
+  },
+  {
+    title: "The Duets",
+    description: "Where two legends collide",
+    songs: [
+      "Stop Draggin' My Heart Around",
+      "Insider",
+      "I Will Run To You",
     ],
   },
 ];
