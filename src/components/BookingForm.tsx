@@ -74,7 +74,8 @@ export default function BookingForm() {
                 you need in one page.
               </p>
               <a
-                href="#"
+                href="/gypsy-falling-epk.pdf"
+                download="Gypsy-Falling-Band-EPK.pdf"
                 className="inline-flex items-center gap-2 border border-gold-500/60 text-gold-400 hover:bg-gold-500/10 hover:border-gold-500 px-6 py-3 rounded font-body font-medium text-sm tracking-wide transition-all duration-300"
               >
                 <svg
