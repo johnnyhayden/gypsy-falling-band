@@ -7,11 +7,9 @@ const icons = [
     <circle cx="12" cy="12" r="3" strokeWidth={1.5} />
     <circle cx="12" cy="12" r="6" strokeWidth={1.5} strokeDasharray="2 3" />
   </svg>,
-  // Guitar for Petty
-  <svg key="guitar" className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 18l-6 3 3-6 11-11 3 3L9 18z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.5 5.5l4 4" />
-    <circle cx="9.5" cy="14.5" r="1.5" strokeWidth={1.5} />
+  // Lightning bolt for Petty
+  <svg key="bolt" className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
   </svg>,
   // Microphone for Duets
   <svg key="mic" className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
