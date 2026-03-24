@@ -8,7 +8,7 @@ export default function Hero() {
         src="/band-photo.jpg"
         alt="Gypsy Falling Band performing live"
         fill
-        className="object-cover object-center"
+        className="object-cover object-[center_calc(50%-40px)]"
         priority
         quality={85}
       />
@@ -26,7 +26,7 @@ export default function Hero() {
       />
 
       {/* Content */}
-      <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
+      <div className="relative z-10 text-center px-6 max-w-4xl mx-auto mt-20">
         {/* Decorative top line */}
         <div className="w-24 h-px bg-gold-400 mx-auto mb-8 opacity-60" />
 
