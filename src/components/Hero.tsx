@@ -43,7 +43,7 @@ export default function Hero() {
         <div className="divider-gold max-w-xs mx-auto my-8" />
 
         <p className="font-body text-lg md:text-xl text-gold-200/80 max-w-2xl mx-auto leading-relaxed mb-12">
-          Nashville&apos;s Premier Tribute to the Legends of
+          Nashville&apos;s Premier Tribute to the Legends of{" "}
           <br className="hidden sm:block" />
           <span className="text-cream font-medium">
             Fleetwood Mac
