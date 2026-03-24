@@ -5,6 +5,8 @@ import { eventTypes } from "@/lib/data";
 
 export default function BookingForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -22,10 +24,29 @@ export default function BookingForm() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Booking inquiry:", formData);
-    setSubmitted(true);
+    setSending(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Something went wrong.");
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to send. Please try again.");
+    } finally {
+      setSending(false);
+    }
   };
 
   const inputClasses =
@@ -177,7 +198,8 @@ export default function BookingForm() {
                       name="date"
                       value={formData.date}
                       onChange={handleChange}
-                      className={inputClasses}
+                      min={new Date().toISOString().split("T")[0]}
+                      className={`${inputClasses} [color-scheme:dark] cursor-pointer`}
                     />
                   </div>
                   <div>
@@ -235,11 +257,18 @@ export default function BookingForm() {
                   />
                 </div>
 
+                {error && (
+                  <p className="font-body text-sm text-wine-300 text-center bg-wine-600/20 border border-wine-400/30 rounded px-4 py-3">
+                    {error}
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  className="w-full bg-gold-500 text-noir-950 font-body font-bold text-base tracking-wide px-10 py-4 rounded transition-all duration-300 hover:bg-gold-400 hover:shadow-[0_0_30px_rgba(184,134,11,0.3)] mt-2"
+                  disabled={sending}
+                  className="w-full bg-gold-500 text-noir-950 font-body font-bold text-base tracking-wide px-10 py-4 rounded transition-all duration-300 hover:bg-gold-400 hover:shadow-[0_0_30px_rgba(184,134,11,0.3)] mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Send Inquiry
+                  {sending ? "Sending..." : "Send Inquiry"}
                 </button>
 
                 <p className="font-body text-xs text-cream/30 text-center">

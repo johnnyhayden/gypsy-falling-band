@@ -68,7 +68,7 @@ export default function About() {
               </div>
               <div>
                 <p className="font-heading text-3xl md:text-4xl text-gold-400">
-                  30+
+                  40+
                 </p>
                 <p className="font-body text-sm text-cream/50 mt-1">
                   Songs Deep
