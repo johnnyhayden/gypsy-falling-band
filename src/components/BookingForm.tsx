@@ -75,7 +75,7 @@ export default function BookingForm() {
             </p>
 
             <p className="font-body text-base text-cream/50 leading-relaxed mb-10">
-              Fill out the form and we&apos;ll get back to you within 48 hours.
+              Fill out the form and we&apos;ll get back to you within 24 hours.
             </p>
 
             {/* EPK Download */}
@@ -135,7 +135,7 @@ export default function BookingForm() {
                   </h3>
                   <p className="font-body text-cream/60 max-w-sm">
                     We&apos;ve received your inquiry and will be in touch within
-                    48 hours. Rock and roll!
+                    24 hours. Rock and roll!
                   </p>
                   <button
                     onClick={() => {
@@ -272,7 +272,7 @@ export default function BookingForm() {
                 </button>
 
                 <p className="font-body text-xs text-cream/30 text-center">
-                  We typically respond within 48 hours.
+                  We typically respond within 24 hours.
                 </p>
               </form>
             )}
