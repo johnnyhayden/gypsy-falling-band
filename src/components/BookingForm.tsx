@@ -55,13 +55,6 @@ export default function BookingForm() {
 
             <p className="font-body text-base text-cream/50 leading-relaxed mb-10">
               Fill out the form and we&apos;ll get back to you within 48 hours.
-              For immediate inquiries, email us directly at{" "}
-              <a
-                href="mailto:johnnyhayden+pettynicks@gmail.com"
-                className="text-gold-400 hover:text-gold-300 transition-colors underline underline-offset-4"
-              >
-                johnnyhayden+pettynicks@gmail.com
-              </a>
             </p>
 
             {/* EPK Download */}
