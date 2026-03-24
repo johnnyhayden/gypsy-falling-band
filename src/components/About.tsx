@@ -79,7 +79,7 @@ export default function About() {
 
           {/* Image column */}
           <div className="relative">
-            <div className="relative aspect-[4/5] rounded-lg overflow-hidden">
+            <div className="relative aspect-square rounded-lg overflow-hidden">
               <Image
                 src="/band-photo.jpg"
                 alt="Gypsy Falling Band"
