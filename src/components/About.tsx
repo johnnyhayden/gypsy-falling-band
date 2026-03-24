@@ -29,7 +29,7 @@ export default function About() {
             <p className="font-body text-lg md:text-xl text-cream/90 leading-relaxed">
               Recreating the band&apos;s legendary persona, from period-accurate
               equipment to spot-on characterizations and musical performances.
-              Rumours takes you back to a time when music was still an unbridled
+              Gypsy Falling takes you back to a time when music was still an unbridled
               cultural experience and bands weren&apos;t afraid to put on a show.
             </p>
 
