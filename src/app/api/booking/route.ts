@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-import twilio from "twilio";
 import { band } from "@/lib/data";
-
-const SMS_RECIPIENTS = ["6152942922"];
 
 /*
  * The full recipient list, independent of whichever Gmail account happens to be
  * doing the sending — GMAIL_USER is the transport credential, not an address to
  * deliver to.
+ *
+ * Email is the only notification channel. There was an SMS alert here too, but a
+ * US toll-free sender needs carrier verification before it can reach handsets at
+ * all, which is a lot of compliance for an alert the Gmail app already pushes to
+ * a phone within seconds of this message landing.
  */
 const EMAIL_RECIPIENTS = [
   "johnnyhayden+golddustandwildflowers@gmail.com",
@@ -18,8 +20,7 @@ const EMAIL_RECIPIENTS = [
 /*
  * Everything below goes into an HTML email built by string concatenation, so every
  * submitted value has to be escaped on the way in — otherwise a visitor can inject
- * markup (or a link) straight into the band's inbox. The SMS body is plain text,
- * so it takes the raw values.
+ * markup (or a link) straight into the band's inbox.
  */
 function escapeHtml(value: unknown) {
   return String(value ?? "")
@@ -35,17 +36,6 @@ function row(label: string, value: string) {
     <td style="padding: 8px 0; color: #666; width: 120px;"><strong>${label}</strong></td>
     <td style="padding: 8px 0;">${value}</td>
   </tr>`;
-}
-
-function formatSmsBody(name: string, email: string, eventType?: string, date?: string, venue?: string, message?: string): string {
-  const lines = [
-    `New booking inquiry from ${name} <${email}>`,
-    eventType ? `Event: ${eventType}` : null,
-    date ? `Date: ${date}` : null,
-    venue ? `Venue: ${venue}` : null,
-    message ? `Message: ${message}` : null,
-  ].filter(Boolean);
-  return lines.join("\n");
 }
 
 export async function POST(request: Request) {
@@ -70,7 +60,7 @@ export async function POST(request: Request) {
 
     const safeEmail = escapeHtml(email);
 
-    const emailPromise = transporter.sendMail({
+    await transporter.sendMail({
       from: `"${band.name} Website" <${process.env.GMAIL_USER}>`,
       to: EMAIL_RECIPIENTS.join(", "),
       replyTo: email,
@@ -100,66 +90,6 @@ export async function POST(request: Request) {
         </div>
       `,
     });
-
-    /*
-     * SMS is the secondary channel and must never be able to fail the request on
-     * its own. Twilio throws synchronously on missing credentials, which would
-     * escape the Promise.allSettled below and land in the outer catch — so the
-     * whole channel is set up inside a thunk whose throws become rejections, and
-     * it is skipped outright when it isn't configured.
-     */
-    const smsConfigured = Boolean(
-      process.env.TWILIO_ACCOUNT_SID &&
-        process.env.TWILIO_AUTH_TOKEN &&
-        process.env.TWILIO_PHONE_NUMBER
-    );
-
-    if (!smsConfigured) {
-      console.warn("SMS skipped: Twilio env vars are incomplete.");
-    }
-
-    const smsBody = formatSmsBody(name, email, eventType, date, venue, message);
-
-    const smsPromises = smsConfigured
-      ? SMS_RECIPIENTS.map((to) =>
-          (async () => {
-            const twilioClient = twilio(
-              process.env.TWILIO_ACCOUNT_SID,
-              process.env.TWILIO_AUTH_TOKEN
-            );
-            return twilioClient.messages.create({
-              body: smsBody,
-              from: process.env.TWILIO_PHONE_NUMBER,
-              to: `+1${to}`,
-            });
-          })()
-        )
-      : [];
-
-    const [emailResult, ...smsResults] = await Promise.allSettled([
-      emailPromise,
-      ...smsPromises,
-    ]);
-
-    if (emailResult.status === "rejected") {
-      console.error("Booking email error:", emailResult.reason);
-    }
-
-    smsResults.forEach((result, i) => {
-      if (result.status === "rejected") {
-        console.error(`SMS error for ${SMS_RECIPIENTS[i]}:`, result.reason);
-      }
-    });
-
-    const emailOk = emailResult.status === "fulfilled";
-    const anySmsOk = smsResults.some((r) => r.status === "fulfilled");
-
-    if (!emailOk && !anySmsOk) {
-      return NextResponse.json(
-        { error: "Failed to send inquiry. Please try again." },
-        { status: 500 }
-      );
-    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

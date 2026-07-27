@@ -106,16 +106,11 @@ Create a `.env.local` file in the project root:
 # Gmail — email notifications
 GMAIL_USER=your-gmail-address@gmail.com
 GMAIL_APP_PASSWORD=your-16-character-app-password
-
-# Twilio — SMS notifications
-TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-TWILIO_AUTH_TOKEN=your-twilio-auth-token
-TWILIO_PHONE_NUMBER=+1xxxxxxxxxx
 ```
 
 ### Production (Vercel)
 
-Set the same five variables under **Project Settings → Environment Variables** in the Vercel dashboard.
+Set the same two variables under **Project Settings → Environment Variables** in the Vercel dashboard.
 
 ---
 
@@ -127,16 +122,9 @@ Set the same five variables under **Project Settings → Environment Variables**
 - **Service:** Gmail SMTP via Nodemailer
 - **Auth:** Requires a Gmail [App Password](https://support.google.com/accounts/answer/185833) (not the regular account password — 2FA must be enabled on the account)
 - **Behavior:** Email is sent `from` the configured Gmail address, with `replyTo` set to the visitor's email so the band can reply directly
-- **Recipients:** `GMAIL_USER` plus every address in the `EMAIL_RECIPIENTS` array in `src/app/api/booking/route.ts`
+- **Recipients:** every address in the `EMAIL_RECIPIENTS` array in `src/app/api/booking/route.ts`. `GMAIL_USER` is the sending credential only, not a recipient — add it to the array explicitly if that inbox should receive inquiries too
 - **Config vars:** `GMAIL_USER`, `GMAIL_APP_PASSWORD`
-
-### Twilio (SMS)
-
-- **Purpose:** Delivers an SMS text to the band's phone(s) simultaneously with the email on every inquiry
-- **Service:** [Twilio Programmable Messaging](https://www.twilio.com/en-us/messaging)
-- **Requirements:** A Twilio account, a purchased sending number, and a verified recipient number (if using a trial account)
-- **Recipients:** Defined in `SMS_RECIPIENTS` array in `src/app/api/booking/route.ts`
-- **Config vars:** `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER`
+- **Phone alerts:** handled by Gmail's own push notifications rather than a separate SMS channel. An earlier Twilio integration was removed — US toll-free senders require carrier verification before they can reach handsets at all, which was disproportionate for an alert the Gmail app already delivers in seconds
 
 ### Google Fonts
 
