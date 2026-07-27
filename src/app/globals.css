@@ -1,5 +1,26 @@
 @import "tailwindcss";
 
+/*
+ * Hero layout switch.
+ *
+ * The mark only clears every face when the window gives it room on both axes:
+ * wide enough that a 300px mark is a small slice of the frame, and tall enough
+ * that the bottom-anchored stack lands below the heads. Miss either — a
+ * half-height laptop window, or a narrow tall one — and the mark drops straight
+ * onto the singer standing mid-frame. Those viewports get the phone treatment
+ * instead: photo band on top, mark below it on the black.
+ */
+@custom-variant hero-over {
+  /* Wide: the mark is a narrow slice of the frame and falls between the players */
+  @media (min-width: 1550px) and (min-height: 820px) {
+    @slot;
+  }
+  /* Tall: the bottom-anchored stack sits well under every chin */
+  @media (min-width: 1200px) and (min-height: 1000px) {
+    @slot;
+  }
+}
+
 @theme {
   /* Tom Petty's half of the catalog */
   --color-gold-50: #fdf8e8;
