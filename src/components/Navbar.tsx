@@ -35,8 +35,11 @@ export default function Navbar() {
         scrolled
           ? "border-b border-gold-500/10 bg-noir-950/95 py-3 backdrop-blur-md"
           : // A scrim rather than nothing — over the hero photo the wordmark has to
-            // sit on something, and the corrugated backdrop is bright in places
-            "bg-gradient-to-b from-noir-950/80 to-transparent py-5"
+            // sit on something, and the corrugated backdrop is bright in places.
+            // On a phone the bar rides 15px higher: the photo starts at the top of
+            // the frame there, so every pixel the wordmark climbs is a pixel further
+            // off the back row's faces.
+            "bg-gradient-to-b from-noir-950/80 to-transparent pb-5 pt-[5px] sm:pt-5"
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6">
