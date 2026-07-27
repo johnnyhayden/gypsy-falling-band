@@ -5,8 +5,15 @@ import { band } from "@/lib/data";
 
 const SMS_RECIPIENTS = ["6152942922"];
 
-/* Copied alongside the sending account, which is itself the first recipient. */
-const EMAIL_RECIPIENTS = ["joefortemusic@gmail.com"];
+/*
+ * The full recipient list, independent of whichever Gmail account happens to be
+ * doing the sending — GMAIL_USER is the transport credential, not an address to
+ * deliver to.
+ */
+const EMAIL_RECIPIENTS = [
+  "johnnyhayden+golddustandwildflowers@gmail.com",
+  "joefortemusic@gmail.com",
+];
 
 /*
  * Everything below goes into an HTML email built by string concatenation, so every
@@ -65,7 +72,7 @@ export async function POST(request: Request) {
 
     const emailPromise = transporter.sendMail({
       from: `"${band.name} Website" <${process.env.GMAIL_USER}>`,
-      to: [process.env.GMAIL_USER, ...EMAIL_RECIPIENTS].filter(Boolean).join(", "),
+      to: EMAIL_RECIPIENTS.join(", "),
       replyTo: email,
       subject: `Booking Inquiry from ${name}${eventType ? ` — ${eventType}` : ""}`,
       html: `
@@ -94,20 +101,40 @@ export async function POST(request: Request) {
       `,
     });
 
-    const twilioClient = twilio(
-      process.env.TWILIO_ACCOUNT_SID,
-      process.env.TWILIO_AUTH_TOKEN
+    /*
+     * SMS is the secondary channel and must never be able to fail the request on
+     * its own. Twilio throws synchronously on missing credentials, which would
+     * escape the Promise.allSettled below and land in the outer catch — so the
+     * whole channel is set up inside a thunk whose throws become rejections, and
+     * it is skipped outright when it isn't configured.
+     */
+    const smsConfigured = Boolean(
+      process.env.TWILIO_ACCOUNT_SID &&
+        process.env.TWILIO_AUTH_TOKEN &&
+        process.env.TWILIO_PHONE_NUMBER
     );
+
+    if (!smsConfigured) {
+      console.warn("SMS skipped: Twilio env vars are incomplete.");
+    }
 
     const smsBody = formatSmsBody(name, email, eventType, date, venue, message);
 
-    const smsPromises = SMS_RECIPIENTS.map((to) =>
-      twilioClient.messages.create({
-        body: smsBody,
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: `+1${to}`,
-      })
-    );
+    const smsPromises = smsConfigured
+      ? SMS_RECIPIENTS.map((to) =>
+          (async () => {
+            const twilioClient = twilio(
+              process.env.TWILIO_ACCOUNT_SID,
+              process.env.TWILIO_AUTH_TOKEN
+            );
+            return twilioClient.messages.create({
+              body: smsBody,
+              from: process.env.TWILIO_PHONE_NUMBER,
+              to: `+1${to}`,
+            });
+          })()
+        )
+      : [];
 
     const [emailResult, ...smsResults] = await Promise.allSettled([
       emailPromise,
