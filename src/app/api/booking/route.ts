@@ -5,6 +5,9 @@ import { band } from "@/lib/data";
 
 const SMS_RECIPIENTS = ["6152942922"];
 
+/* Copied alongside the sending account, which is itself the first recipient. */
+const EMAIL_RECIPIENTS = ["joefortemusic@gmail.com"];
+
 /*
  * Everything below goes into an HTML email built by string concatenation, so every
  * submitted value has to be escaped on the way in — otherwise a visitor can inject
@@ -62,7 +65,7 @@ export async function POST(request: Request) {
 
     const emailPromise = transporter.sendMail({
       from: `"${band.name} Website" <${process.env.GMAIL_USER}>`,
-      to: process.env.GMAIL_USER,
+      to: [process.env.GMAIL_USER, ...EMAIL_RECIPIENTS].filter(Boolean).join(", "),
       replyTo: email,
       subject: `Booking Inquiry from ${name}${eventType ? ` — ${eventType}` : ""}`,
       html: `

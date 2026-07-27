@@ -35,18 +35,20 @@ The site is a single-page application with anchor-linked sections:
 1. Visitor fills out the booking form (`Name`, `Email`, `Event Date`, `Venue/Location`, `Event Type`, `Message`)
 2. The form `POST`s to `/api/booking`
 3. The API simultaneously dispatches:
-   - An **HTML email** to the band's Gmail inbox (via Nodemailer + Gmail SMTP)
+   - An **HTML email** to the sending Gmail inbox plus every address in `EMAIL_RECIPIENTS` (via Nodemailer + Gmail SMTP)
    - An **SMS text message** to each number in `SMS_RECIPIENTS` (via Twilio)
 4. Both are fired in parallel with `Promise.allSettled` — if one channel fails the other still delivers
 5. The visitor sees a confirmation message; the band is expected to reply within 24 hours
 
-**SMS recipients** are defined in `src/app/api/booking/route.ts`:
+**Recipients** are defined in `src/app/api/booking/route.ts`:
 
 ```ts
 const SMS_RECIPIENTS = ["6152942922"];
+const EMAIL_RECIPIENTS = ["joefortemusic@gmail.com"];
 ```
 
-Add more numbers to this array to notify additional people on every inquiry.
+Add to these arrays to notify additional people on every inquiry. `GMAIL_USER` is
+always copied on the email, so `EMAIL_RECIPIENTS` lists only the extra addresses.
 
 ---
 
@@ -125,6 +127,7 @@ Set the same five variables under **Project Settings → Environment Variables**
 - **Service:** Gmail SMTP via Nodemailer
 - **Auth:** Requires a Gmail [App Password](https://support.google.com/accounts/answer/185833) (not the regular account password — 2FA must be enabled on the account)
 - **Behavior:** Email is sent `from` the configured Gmail address, with `replyTo` set to the visitor's email so the band can reply directly
+- **Recipients:** `GMAIL_USER` plus every address in the `EMAIL_RECIPIENTS` array in `src/app/api/booking/route.ts`
 - **Config vars:** `GMAIL_USER`, `GMAIL_APP_PASSWORD`
 
 ### Twilio (SMS)
