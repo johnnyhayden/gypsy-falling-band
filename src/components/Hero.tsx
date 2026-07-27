@@ -17,8 +17,14 @@ export default function Hero() {
        * width-driven here, so chins land at 0.35 × width; 35vw + 180px keeps roughly
        * 180px of torso under them at every size, and the cap takes over exactly
        * where the 900px max-width does.
+       *
+       * The 60px top margin clears the fixed navbar. The photo starts at its own top
+       * edge with barely a dozen pixels of wall above the tallest head, so there is
+       * nothing to crop into — the only way to keep the wordmark off the back row's
+       * faces is to start the band below it. Over the photo the mark's own layout
+       * already keeps the nav on the corrugated backdrop, so it drops to 0 there.
        */}
-      <div className="relative mx-auto h-[min(35vw_+_180px,495px)] w-full shrink-0 sm:max-w-[900px] min-[901px]:[mask-image:linear-gradient(to_right,transparent_0%,black_7%,black_93%,transparent_100%)] hero-over:absolute hero-over:inset-0 hero-over:h-auto hero-over:max-w-none hero-over:[mask-image:none]">
+      <div className="relative mx-auto mt-[60px] h-[min(35vw_+_180px,495px)] w-full shrink-0 hero-over:mt-0 sm:max-w-[900px] min-[901px]:[mask-image:linear-gradient(to_right,transparent_0%,black_7%,black_93%,transparent_100%)] hero-over:absolute hero-over:inset-0 hero-over:h-auto hero-over:max-w-none hero-over:[mask-image:none]">
         {/* Over the photo the crop is driven by width, so the square frame runs far
             taller than the window and every chin sits low. Pulling the crop up 14% of
             that overflow lifts the whole band — it costs a little headroom above the
