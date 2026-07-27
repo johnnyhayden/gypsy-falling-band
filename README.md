@@ -124,7 +124,7 @@ Set the same two variables under **Project Settings → Environment Variables** 
 - **Behavior:** Email is sent `from` the configured Gmail address, with `replyTo` set to the visitor's email so the band can reply directly
 - **Recipients:** every address in the `EMAIL_RECIPIENTS` array in `src/app/api/booking/route.ts`. `GMAIL_USER` is the sending credential only, not a recipient — add it to the array explicitly if that inbox should receive inquiries too
 - **Config vars:** `GMAIL_USER`, `GMAIL_APP_PASSWORD`
-- **Phone alerts:** handled by Gmail's own push notifications rather than a separate SMS channel. An earlier Twilio integration was removed — US toll-free senders require carrier verification before they can reach handsets at all, which was disproportionate for an alert the Gmail app already delivers in seconds
+- **Text alerts:** a short second message goes to `SMS_GATEWAY_RECIPIENTS` in the same file — carrier email-to-SMS addresses (`6152942922@txt.att.net` for AT&T; `@vtext.com` Verizon, `@tmomail.net` T-Mobile). This replaced a Twilio integration, since a US toll-free sender needs carrier verification before it can message handsets at all. The gateways are unofficial and are being retired carrier by carrier, so the send is best-effort: a failure is logged and the inquiry still succeeds on the strength of the email
 
 ### Google Fonts
 
