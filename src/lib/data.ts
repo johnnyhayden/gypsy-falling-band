@@ -15,7 +15,7 @@ export const navLinks = [
 
 export const featuredVideo = {
   id: "kQ_xaoJmY9o",
-  title: "Promo SIR — Fleetwood Mac",
+  title: "Promo 2026",
 };
 
 // Order matters: SetList.tsx assigns icons and accent colors by index.
@@ -46,7 +46,7 @@ export const setListCategories = [
       "Learning to Fly",
       "Refugee",
       "Breakdown",
-      "Here Comes My Girl",
+      "Free Fallin'",
       "The Waiting",
     ],
   },
@@ -56,8 +56,6 @@ export const setListCategories = [
     songs: [
       "Edge of Seventeen",
       "Stand Back",
-      "Leather and Lace",
-      "Free Fallin'",
       "Wildflowers",
       "Stop Draggin' My Heart Around",
     ],

@@ -205,11 +205,11 @@ async function generateEPK() {
     },
     {
       title: "TOM PETTY",
-      songs: ["American Girl", "Mary Jane's Last Dance", "Runnin' Down a Dream", "I Won't Back Down", "Learning to Fly", "Refugee", "Breakdown", "Here Comes My Girl", "Listen to Her Heart"],
+      songs: ["American Girl", "Mary Jane's Last Dance", "Runnin' Down a Dream", "I Won't Back Down", "Learning to Fly", "Refugee", "Breakdown", "Free Fallin'", "Listen to Her Heart"],
     },
     {
       title: "THE SOLO YEARS",
-      songs: ["Edge of Seventeen", "Stand Back", "Leather and Lace", "Free Fallin'", "Wildflowers", "Stop Draggin' My Heart Around"],
+      songs: ["Edge of Seventeen", "Stand Back", "Wildflowers", "Stop Draggin' My Heart Around"],
     },
   ];
 
