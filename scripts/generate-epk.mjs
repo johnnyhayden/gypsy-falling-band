@@ -41,17 +41,22 @@ async function generateEPK() {
   // === HEADER ===
   let y = height - 60;
 
-  page.drawText("GOLD DUST & WILDFLOWERS", {
+  const title = "GYPSY FALLIN'";
+  const titleSize = 22;
+  page.drawText(title, {
     x: 50, y,
-    size: 22,
+    size: titleSize,
     font: helveticaBold,
     color: cream,
   });
 
   y -= 6;
-  // Gold underline
+  // Gold underline, measured off the title rather than hardcoded, so it tracks the
+  // name instead of overshooting it the next time the name changes
   page.drawRectangle({
-    x: 50, y, width: 265, height: 1.5,
+    x: 50, y,
+    width: helveticaBold.widthOfTextAtSize(title, titleSize),
+    height: 1.5,
     color: gold,
   });
 
@@ -132,7 +137,7 @@ async function generateEPK() {
     "Seventeen,\" \"Free Fallin',\" and the \"Stop Draggin' My Heart Around\" duet that",
     "celebrates the musical connection between Stevie Nicks and Tom Petty.",
     "",
-    "Gold Dust & Wildflowers isn't about impersonation - it's about capturing the sound,",
+    "Gypsy Fallin' isn't about impersonation - it's about capturing the sound,",
     "spirit, and emotion of two of rock's most beloved catalogs with exceptional",
     "musicianship, authentic vocals, and a show audiences know from the very first note.",
   ];
@@ -336,7 +341,7 @@ async function generateEPK() {
   // Save
   const pdfBytes = await doc.save();
   fs.mkdirSync(outputDir, { recursive: true });
-  const outputPath = path.join(outputDir, "gold-dust-wildflowers-epk.pdf");
+  const outputPath = path.join(outputDir, "gypsy-fallin-epk.pdf");
   fs.writeFileSync(outputPath, pdfBytes);
   console.log(`EPK saved to ${outputPath} (${(pdfBytes.length / 1024).toFixed(1)} KB)`);
 }

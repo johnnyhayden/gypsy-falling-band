@@ -2,14 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { band, navLinks } from "@/lib/data";
-
-function Wordmark({ className = "" }: { className?: string }) {
-  return (
-    <span className={`font-heading tracking-[0.1em] ${className}`}>
-      GOLD DUST <span className="text-gold-400">&amp; WILDFLOWERS</span>
-    </span>
-  );
-}
+import Wordmark from "./Wordmark";
 
 function InstagramIcon({ className = "" }: { className?: string }) {
   return (
@@ -48,7 +41,9 @@ export default function Navbar() {
           className="text-cream transition-colors hover:text-gold-300"
           aria-label={`${band.name} — back to top`}
         >
-          <Wordmark className="text-[0.7rem] sm:text-xs md:text-sm" />
+          {/* Two short words rather than the four-word name the bar was sized for,
+              so the mark can carry a step more size without crowding the links. */}
+          <Wordmark className="text-sm sm:text-base md:text-lg" />
         </a>
 
         <div className="hidden items-center gap-8 md:flex">
@@ -101,7 +96,7 @@ export default function Navbar() {
           </svg>
         </button>
 
-        <Wordmark className="mb-4 text-sm text-cream" />
+        <Wordmark className="mb-4 text-lg text-cream" />
 
         {navLinks.map((link) => (
           <a

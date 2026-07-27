@@ -3,8 +3,8 @@ import { Bodoni_Moda, Barlow } from "next/font/google";
 import "./globals.css";
 
 /*
- * Bodoni's high stroke contrast and flat hairline serifs rhyme with the engraved
- * lettering in the logo without trying to imitate it. Barlow stays out of the way.
+ * Bodoni's high stroke contrast and flat hairline serifs give the wordmark an
+ * engraved, seventies-record-sleeve weight. Barlow stays out of the way.
  */
 const bodoni = Bodoni_Moda({
   subsets: ["latin"],
@@ -26,11 +26,11 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Gold Dust & Wildflowers | Fleetwood Mac & Tom Petty Tribute Band",
+  title: "Gypsy Fallin’ | Fleetwood Mac & Tom Petty Tribute Band",
   description:
-    "Gold Dust & Wildflowers brings together the timeless music of Fleetwood Mac and Tom Petty in one unforgettable live show. Book the band for festivals, weddings, corporate events, and venues.",
+    "Gypsy Fallin’ brings together the timeless music of Fleetwood Mac and Tom Petty in one unforgettable live show. Book the band for festivals, weddings, corporate events, and venues.",
   keywords: [
-    "Gold Dust & Wildflowers",
+    "Gypsy Fallin’",
     "Fleetwood Mac tribute",
     "Tom Petty tribute",
     "Stevie Nicks tribute",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     "live music Nashville",
   ],
   openGraph: {
-    title: "Gold Dust & Wildflowers",
+    title: "Gypsy Fallin’",
     description:
       "The timeless music of Fleetwood Mac and Tom Petty in one unforgettable live show.",
     type: "website",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
         url: "/band-photo-july2026.jpg",
         width: 2006,
         height: 2006,
-        alt: "Gold Dust & Wildflowers",
+        alt: "Gypsy Fallin’",
       },
     ],
   },

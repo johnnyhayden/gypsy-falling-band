@@ -32,7 +32,7 @@ export default function Hero() {
             crop DOWN and shows more of the top. */}
         <Image
           src="/band-photo-july2026.jpg"
-          alt="Gold Dust & Wildflowers"
+          alt="Gypsy Fallin’ performing live"
           fill
           className="object-cover object-top hero-over:object-[center_calc(17%_+_40px)]"
           priority
@@ -49,8 +49,8 @@ export default function Hero() {
 
         {/* A soft pool of shade under the mark — a torso-height backdrop is still busy
             for hairline line art, and the drop shadow alone can't hold it up. Centred
-            on the mark's new lower position so it backs the logo instead of dimming
-            the faces above it. */}
+            on the mark's new lower position so it backs the wordmark instead of
+            dimming the faces above it. */}
         <div
           className="absolute inset-0 hidden hero-over:block"
           style={{
@@ -77,26 +77,30 @@ export default function Hero() {
           {band.city}
         </p>
 
-        {/* The mark is sized from the room the photo actually leaves, not from a
-            breakpoint. With a width-driven cover crop the chin line lands at about
-            0.35 × viewport width, lifted by 17% of the overflow less the 40px the
-            crop is dropped back down, so the
-            clear band under the faces is 0.83 × height − 0.18 × width − 40. Take 255px
-            off that for the tagline, buttons, bottom padding and the 50px of air under
-            the mark, and what's left is the mark itself: a tall window gets the full
-            320px, a short one gets a smaller mark rather than a microscopic one.
-            The 150px floor is the one place that budget gives: at the very tightest
-            windows the overlay still runs at (around 1440 × 780) the formula asks for
-            less than 150px, and the mark holds at 150 and grazes the chin line rather
-            than shrinking away to nothing. */}
-        <Image
-          src="/gdw-logo.png"
-          alt="Gold Dust & Wildflowers — a Fleetwood Mac and Tom Petty tribute band"
-          width={1089}
-          height={1122}
-          priority
-          className="anim-rise anim-delay-1 mt-5 h-auto w-[196px] drop-shadow-[0_0_36px_rgba(212,160,23,0.16)] sm:mt-6 sm:w-[200px] hero-over:mt-0 hero-over:mb-[50px] hero-over:w-[clamp(150px,83svh_-_18vw_-_255px,320px)]"
-        />
+        {/* The mark is typeset, not an image, so it is sized by font-size — but from
+            the room the photo actually leaves rather than from a breakpoint. With a
+            width-driven cover crop the chin line lands at about 0.35 × viewport width,
+            lifted by 17% of the overflow less the 40px the crop is dropped back down,
+            so the clear band under the faces is 0.83 × height − 0.18 × width − 40.
+            Take 255px off that for the tagline, buttons, bottom padding and the 50px
+            of air under the mark, and what's left is the mark's own height budget.
+            Two stacked lines at 1.05 leading spend about 2.5em of that budget, so the
+            font-size is 0.4 × it — folded into the coefficients below rather than
+            written as a division, because a slash inside a Tailwind arbitrary value
+            reads as the line-height shorthand. A tall window gets the full 128px cap,
+            a short one gets a smaller mark rather than a microscopic one. The 60px
+            floor is the one place the budget gives — at the tightest windows the
+            overlay still runs at (around 1440 × 780) the formula asks for less, and
+            the mark holds and grazes the chin line rather than shrinking to nothing.
+
+            The shadow is a dark pool rather than the gold glow the image mark carried:
+            hairline Bodoni serifs over a lit photograph need separation from what is
+            behind them, and a glow in the same family as the gold line only blurs it. */}
+        <h1 className="anim-rise anim-delay-1 mt-5 font-heading text-[52px] font-bold leading-[1.05] tracking-[0.08em] text-cream drop-shadow-[0_2px_28px_rgba(11,8,16,0.85)] sm:mt-6 sm:text-[60px] hero-over:mt-0 hero-over:mb-[50px] hero-over:text-[clamp(60px,33.2svh_-_7.2vw_-_102px,128px)]">
+          GYPSY
+          <br />
+          <span className="text-gold-400">FALLIN’</span>
+        </h1>
 
         <p className="anim-rise anim-delay-2 mt-5 max-w-md font-heading text-base italic leading-relaxed text-cream/80 sm:mt-6 sm:max-w-3xl hero-over:mt-5 hero-over:text-lg">
           Two catalogs. Fleetwood Mac &amp; Tom Petty. Every song you already know.

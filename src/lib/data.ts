@@ -1,5 +1,5 @@
 export const band = {
-  name: "Gold Dust & Wildflowers",
+  name: "Gypsy Fallin’",
   city: "Nashville, Tennessee",
   email: "johnnyhayden+golddust@gmail.com",
   instagram: "@pettynicksofnash",

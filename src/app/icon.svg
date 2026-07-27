@@ -1,6 +1,6 @@
-<!-- Tab mark: the wildflower from the logo's wreath, reduced to what survives at
-     16px — eight petals, a gold heart, on the site's noir so it reads against a
-     light or a dark tab strip. -->
+<!-- Tab mark: the section divider's bloom, reduced to what survives at 16px —
+     eight petals, a gold heart, on the site's noir so it reads against a light
+     or a dark tab strip. -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
   <circle cx="16" cy="16" r="16" fill="#0b0810" />
   <g fill="#e9be44">

@@ -9,7 +9,7 @@ export default function TheShow() {
         </p>
 
         <p className="mt-4 font-heading text-2xl leading-snug text-cream md:mt-5 md:text-4xl">
-          Gold Dust &amp; Wildflowers celebrates the music of{" "}
+          Gypsy Fallin’ celebrates the music of{" "}
           <span className="text-wine-300">Fleetwood Mac</span> and{" "}
           <span className="text-gold-300">Tom Petty</span> in one live show.
         </p>
@@ -38,7 +38,7 @@ export default function TheShow() {
         </blockquote>
 
         <p className="font-body text-base leading-relaxed text-cream/75 md:text-lg">
-          Gold Dust &amp; Wildflowers focuses on the sound and feel of the music
+          Gypsy Fallin’ focuses on the sound and feel of the music
           rather than impersonation. We are experienced musicians bringing these
           songs to life with authentic vocals, thoughtful arrangements, and
           respect for what made them great.

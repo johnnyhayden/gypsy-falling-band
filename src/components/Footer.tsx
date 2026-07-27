@@ -1,4 +1,5 @@
 import { band } from "@/lib/data";
+import Wordmark from "./Wordmark";
 
 export default function Footer() {
   return (
@@ -6,9 +7,7 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-6">
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row md:gap-8">
           <div className="text-center md:text-left">
-            <p className="font-heading text-base tracking-[0.1em] text-cream md:text-lg">
-              GOLD DUST <span className="text-gold-400">&amp; WILDFLOWERS</span>
-            </p>
+            <Wordmark className="block text-lg text-cream md:text-xl" />
             <p className="mt-2 font-body text-sm text-cream/40">{band.city}</p>
           </div>
 

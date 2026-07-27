@@ -1,6 +1,6 @@
-# Gypsy Falling Band — Website
+# Gypsy Fallin' — Website
 
-Marketing and booking website for **Gypsy Falling Band**, Nashville's tribute to Fleetwood Mac and Tom Petty. The site's primary goal is to showcase the band and convert visitors into booked events by making it easy to inquire, download a press kit, and find the band on social media.
+Marketing and booking website for **Gypsy Fallin'**, Nashville's tribute to Fleetwood Mac and Tom Petty. The site's primary goal is to showcase the band and convert visitors into booked events by making it easy to inquire, download a press kit, and find the band on social media.
 
 ---
 
@@ -66,16 +66,21 @@ src/
 ├── components/
 │   ├── Navbar.tsx
 │   ├── Hero.tsx
-│   ├── About.tsx
-│   ├── MediaGallery.tsx
+│   ├── Wordmark.tsx           # The band mark — typeset, not an image
+│   ├── FeaturedVideo.tsx
+│   ├── TheShow.tsx
+│   ├── WildflowerRule.tsx     # Drawn section divider
 │   ├── SetList.tsx
 │   ├── BookingForm.tsx        # Client component — form UI + submission
 │   └── Footer.tsx
 └── lib/
-    └── data.ts                # Static content: nav links, set list, event types, media placeholders
+    └── data.ts                # Static content: band, nav links, set list, event types
 
 public/
-└── gypsy-falling-epk.pdf      # Downloadable Electronic Press Kit
+└── band-photo-july2026.jpg    # Hero photograph
+
+private/
+└── gypsy-fallin-epk.pdf       # Electronic Press Kit — generated, not served (download is disabled)
 ```
 
 ---

@@ -1,7 +1,7 @@
 /*
- * The house mark, pulled straight out of the logo's wreath: a hairline stem with a
- * few leaves and one cosmos bloom whose heart is gold. Gold dust, wildflower — the
- * whole band name in one drawing, so it earns its place as the section divider.
+ * The house ornament: a hairline stem with a few leaves and one cosmos bloom whose
+ * heart is gold. It carries the seventies-Californian note the music has without
+ * spelling anything out, which is what earns it the section divider slot.
  *
  * Strokes are currentColor so callers set the mood; only the bloom's heart is
  * pinned to gold. Petal dimensions are jittered by hand — evenly generated petals

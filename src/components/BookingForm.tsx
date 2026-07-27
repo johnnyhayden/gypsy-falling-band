@@ -89,8 +89,8 @@ export default function BookingForm() {
                 you need in one page.
               </p>
               <a
-                href="/gold-dust-wildflowers-epk.pdf"
-                download="Gold-Dust-and-Wildflowers-EPK.pdf"
+                href="/gypsy-fallin-epk.pdf"
+                download="Gypsy-Fallin-EPK.pdf"
                 className="inline-flex items-center gap-2 border border-gold-500/60 text-gold-400 hover:bg-gold-500/10 hover:border-gold-500 px-6 py-3 rounded font-body font-medium text-sm tracking-wide transition-all duration-300"
               >
                 <svg
