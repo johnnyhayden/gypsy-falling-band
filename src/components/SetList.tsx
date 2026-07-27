@@ -47,19 +47,19 @@ const accents = [
 
 export default function SetList() {
   return (
-    <section id="setlist" className="bg-noir-950 py-24 md:py-32">
+    <section id="setlist" className="bg-noir-950 py-14 md:py-24">
       <div className="mx-auto max-w-6xl px-6">
-        <div className="mb-14 text-center">
+        <div className="mb-8 text-center md:mb-12">
           <p className="font-body text-xs font-medium uppercase tracking-[0.3em] text-gold-400">
             The Catalog
           </p>
           <h2 className="mt-3 font-heading text-3xl text-cream md:text-4xl">
             The Set List
           </h2>
-          <WildflowerRule className="mx-auto mt-6 h-auto w-[260px] text-graphite/60 md:w-[320px]" />
+          <WildflowerRule className="mx-auto mt-5 h-auto w-[260px] text-graphite/60 md:mt-6 md:w-[320px]" />
         </div>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3 md:gap-8">
           {setListCategories.map((category, i) => (
             <div
               key={category.title}
@@ -67,8 +67,10 @@ export default function SetList() {
             >
               <div className={`h-px ${accents[i].bar}`} />
 
-              <div className="p-8">
-                <div className={`${accents[i].icon} mb-6`}>{icons[i]}</div>
+              <div className="p-6 md:p-8">
+                <div className={`${accents[i].icon} mb-4 md:mb-6`}>
+                  {icons[i]}
+                </div>
 
                 <h3 className="font-heading text-xl text-cream">
                   {category.title}
@@ -77,7 +79,7 @@ export default function SetList() {
                   {category.description}
                 </p>
 
-                <div className="my-6 h-px bg-gradient-to-r from-noir-700 to-transparent" />
+                <div className="my-5 h-px bg-gradient-to-r from-noir-700 to-transparent md:my-6" />
 
                 <ul className="space-y-3">
                   {category.songs.map((song) => (
@@ -103,7 +105,7 @@ export default function SetList() {
           ))}
         </div>
 
-        <p className="mt-12 text-center font-body text-sm text-cream/40">
+        <p className="mt-8 text-center font-body text-sm text-cream/40 md:mt-12">
           A sampling only — we play 30+ songs across both catalogs and the solo
           years, and we&rsquo;ll build a set list around your event.
         </p>

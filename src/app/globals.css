@@ -3,20 +3,50 @@
 /*
  * Hero layout switch.
  *
- * The mark only clears every face when the window gives it room on both axes:
- * wide enough that a 300px mark is a small slice of the frame, and tall enough
- * that the bottom-anchored stack lands below the heads. Miss either — a
- * half-height laptop window, or a narrow tall one — and the mark drops straight
- * onto the singer standing mid-frame. Those viewports get the phone treatment
- * instead: photo band on top, mark below it on the black.
+ * Full-bleed photo with the mark laid over it is the intended look, so this
+ * fires on any ordinary landscape window. The mark stays off the faces by
+ * shrinking to the room below the chins (see Hero.tsx) rather than by giving up
+ * the overlay.
+ *
+ * The photo is square, so cover crops the sides once the window is taller than
+ * it is wide — that eats the outer two players. Portrait and near-square
+ * viewports get the phone treatment instead: photo band on top, mark below it
+ * on the black. Very wide windows blow the band up until the chin line sinks
+ * past the fold, so those need extra height before the overlay is worth it.
  */
 @custom-variant hero-over {
-  /* Wide: the mark is a narrow slice of the frame and falls between the players */
-  @media (min-width: 1550px) and (min-height: 820px) {
+  /*
+   * The clear band under the chins is 0.83 × height − 0.18 × width (Hero.tsx works
+   * this out), and the mark needs 215px of that left over for the copy below it.
+   * Solving for a 150px floor gives height ≥ 0.217 × width + 440 — these rules are
+   * that line, stepped, each holding to the widest window in its band. Below the
+   * line the fallback layout takes over.
+   */
+  @media (min-width: 768px) and (max-width: 1024px) and (min-height: 665px) and (min-aspect-ratio: 11/10) {
     @slot;
   }
-  /* Tall: the bottom-anchored stack sits well under every chin */
-  @media (min-width: 1200px) and (min-height: 1000px) {
+  @media (min-width: 1025px) and (max-width: 1280px) and (min-height: 720px) and (min-aspect-ratio: 11/10) {
+    @slot;
+  }
+  @media (min-width: 1281px) and (max-width: 1440px) and (min-height: 755px) and (min-aspect-ratio: 11/10) {
+    @slot;
+  }
+  @media (min-width: 1441px) and (max-width: 1600px) and (min-height: 790px) and (min-aspect-ratio: 11/10) {
+    @slot;
+  }
+  @media (min-width: 1601px) and (max-width: 1920px) and (min-height: 860px) {
+    @slot;
+  }
+  @media (min-width: 1921px) and (max-width: 2200px) and (min-height: 920px) {
+    @slot;
+  }
+  @media (min-width: 2201px) and (max-width: 2560px) and (min-height: 1000px) {
+    @slot;
+  }
+  @media (min-width: 2561px) and (max-width: 3840px) and (min-height: 1275px) {
+    @slot;
+  }
+  @media (min-width: 3841px) and (min-height: 1560px) {
     @slot;
   }
 }

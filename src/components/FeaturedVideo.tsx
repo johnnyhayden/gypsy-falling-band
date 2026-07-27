@@ -9,16 +9,16 @@ export default function FeaturedVideo() {
   const [playing, setPlaying] = useState(false);
 
   return (
-    <section id="video" className="bg-noir-950 py-20 md:py-28">
+    <section id="video" className="bg-noir-950 py-14 md:py-24">
       <div className="mx-auto max-w-5xl px-6">
-        <div className="mb-10 text-center">
+        <div className="mb-8 text-center md:mb-10">
           <p className="font-body text-xs font-medium uppercase tracking-[0.3em] text-gold-400">
             Watch
           </p>
           <h2 className="mt-3 font-heading text-3xl text-cream md:text-4xl">
             Hear it for yourself
           </h2>
-          <WildflowerRule className="mx-auto mt-6 h-auto w-[260px] text-graphite/60 md:w-[320px]" />
+          <WildflowerRule className="mx-auto mt-5 h-auto w-[260px] text-graphite/60 md:mt-6 md:w-[320px]" />
         </div>
 
         <div className="relative aspect-video overflow-hidden rounded-sm border border-noir-700 bg-noir-900">

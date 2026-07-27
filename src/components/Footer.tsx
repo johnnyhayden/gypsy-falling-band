@@ -2,9 +2,9 @@ import { band } from "@/lib/data";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-noir-800 bg-noir-950 py-16">
+    <footer className="border-t border-noir-800 bg-noir-950 py-10 md:py-14">
       <div className="mx-auto max-w-6xl px-6">
-        <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
+        <div className="flex flex-col items-center justify-between gap-6 md:flex-row md:gap-8">
           <div className="text-center md:text-left">
             <p className="font-heading text-base tracking-[0.1em] text-cream md:text-lg">
               GOLD DUST <span className="text-gold-400">&amp; WILDFLOWERS</span>
@@ -46,7 +46,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="my-8 h-px bg-gradient-to-r from-transparent via-gold-500/30 to-transparent" />
+        <div className="my-6 h-px bg-gradient-to-r from-transparent via-gold-500/30 to-transparent md:my-8" />
 
         <p className="text-center font-body text-xs text-cream/30">
           &copy; {new Date().getFullYear()} {band.name}. All rights reserved.
