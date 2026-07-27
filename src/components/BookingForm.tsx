@@ -53,9 +53,9 @@ export default function BookingForm() {
     "w-full bg-noir-800 border border-noir-700 text-cream placeholder:text-noir-200 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 focus:outline-none rounded px-4 py-3 font-body text-base transition-colors duration-300";
 
   return (
-    <section id="booking" className="bg-noir-950 py-24 md:py-32 relative">
+    <section id="booking" className="bg-noir-900 py-24 md:py-32 relative">
       {/* Top divider */}
-      <div className="absolute top-0 left-0 right-0 divider-gold" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-500/50 to-transparent" />
 
       <div className="max-w-6xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20">
@@ -64,23 +64,24 @@ export default function BookingForm() {
             <p className="text-gold-400 text-sm tracking-[0.3em] uppercase font-body font-medium mb-4">
               Get in Touch
             </p>
-            <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl text-cream mb-8">
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl text-cream mb-8">
               Book the <span className="text-gold-400">Band</span>
             </h2>
 
             <p className="font-body text-lg text-cream/70 leading-relaxed mb-6">
-              Whether it&apos;s a festival stage, a wedding reception, a
-              corporate gala, or a Saturday night at your favorite venue — Gypsy
-              Falling Band brings the full arena-rock experience to any event.
+              Festival stage, wedding reception, corporate gala, or a Saturday
+              night at your favorite venue — tell us about the room and we&apos;ll
+              build the night around it.
             </p>
 
             <p className="font-body text-base text-cream/50 leading-relaxed mb-10">
               Fill out the form and we&apos;ll get back to you within 24 hours.
             </p>
 
-            {/* EPK Download */}
+            {/* EPK Download — hidden until we're ready to publish the press kit.
+                Restore this block and move the PDF back into public/ to re-enable.
             <div className="p-6 bg-noir-800/50 border border-noir-700 rounded-lg">
-              <p className="font-heading text-lg text-cream mb-2">
+              <p className="font-body font-semibold text-lg text-cream mb-2">
                 Electronic Press Kit
               </p>
               <p className="font-body text-sm text-cream/50 mb-4">
@@ -88,8 +89,8 @@ export default function BookingForm() {
                 you need in one page.
               </p>
               <a
-                href="/gypsy-falling-epk.pdf"
-                download="Gypsy-Falling-Band-EPK.pdf"
+                href="/gold-dust-wildflowers-epk.pdf"
+                download="Gold-Dust-and-Wildflowers-EPK.pdf"
                 className="inline-flex items-center gap-2 border border-gold-500/60 text-gold-400 hover:bg-gold-500/10 hover:border-gold-500 px-6 py-3 rounded font-body font-medium text-sm tracking-wide transition-all duration-300"
               >
                 <svg
@@ -108,6 +109,7 @@ export default function BookingForm() {
                 Download EPK (PDF)
               </a>
             </div>
+            */}
           </div>
 
           {/* Right column — form */}
@@ -130,12 +132,11 @@ export default function BookingForm() {
                       />
                     </svg>
                   </div>
-                  <h3 className="font-heading text-3xl text-cream mb-4">
+                  <h3 className="font-heading text-2xl text-cream mb-4">
                     Thank You!
                   </h3>
                   <p className="font-body text-cream/60 max-w-sm">
-                    We&apos;ve received your inquiry and will be in touch within
-                    24 hours. Rock and roll!
+                    Your inquiry is in. We&apos;ll be in touch within 24 hours.
                   </p>
                   <button
                     onClick={() => {

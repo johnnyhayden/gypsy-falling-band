@@ -1,5 +1,27 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { band } from "@/lib/data";
+
+/*
+ * Everything below goes into an HTML email built by string concatenation, so every
+ * submitted value has to be escaped on the way in — otherwise a visitor can inject
+ * markup (or a link) straight into the band's inbox.
+ */
+function escapeHtml(value: unknown) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function row(label: string, value: string) {
+  return `<tr>
+    <td style="padding: 8px 0; color: #666; width: 120px;"><strong>${label}</strong></td>
+    <td style="padding: 8px 0;">${value}</td>
+  </tr>`;
+}
 
 export async function POST(request: Request) {
   try {
@@ -21,8 +43,10 @@ export async function POST(request: Request) {
       },
     });
 
+    const safeEmail = escapeHtml(email);
+
     await transporter.sendMail({
-      from: `"Gypsy Falling Band Website" <${process.env.GMAIL_USER}>`,
+      from: `"${band.name} Website" <${process.env.GMAIL_USER}>`,
       to: process.env.GMAIL_USER,
       replyTo: email,
       subject: `Booking Inquiry from ${name}${eventType ? ` — ${eventType}` : ""}`,
@@ -32,21 +56,21 @@ export async function POST(request: Request) {
             New Booking Inquiry
           </h2>
           <table style="width: 100%; border-collapse: collapse;">
-            <tr>
-              <td style="padding: 8px 0; color: #666; width: 120px;"><strong>Name</strong></td>
-              <td style="padding: 8px 0;">${name}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; color: #666;"><strong>Email</strong></td>
-              <td style="padding: 8px 0;"><a href="mailto:${email}">${email}</a></td>
-            </tr>
-            ${date ? `<tr><td style="padding: 8px 0; color: #666;"><strong>Event Date</strong></td><td style="padding: 8px 0;">${date}</td></tr>` : ""}
-            ${venue ? `<tr><td style="padding: 8px 0; color: #666;"><strong>Venue</strong></td><td style="padding: 8px 0;">${venue}</td></tr>` : ""}
-            ${eventType ? `<tr><td style="padding: 8px 0; color: #666;"><strong>Event Type</strong></td><td style="padding: 8px 0;">${eventType}</td></tr>` : ""}
+            ${row("Name", escapeHtml(name))}
+            ${row("Email", `<a href="mailto:${encodeURI(String(email))}">${safeEmail}</a>`)}
+            ${date ? row("Event Date", escapeHtml(date)) : ""}
+            ${venue ? row("Venue", escapeHtml(venue)) : ""}
+            ${eventType ? row("Event Type", escapeHtml(eventType)) : ""}
           </table>
-          ${message ? `<div style="margin-top: 16px; padding: 12px; background: #f5f5f5; border-radius: 4px;"><strong>Message:</strong><br/><br/>${message.replace(/\n/g, "<br/>")}</div>` : ""}
+          ${
+            message
+              ? `<div style="margin-top: 16px; padding: 12px; background: #f5f5f5; border-radius: 4px;"><strong>Message:</strong><br/><br/>${escapeHtml(
+                  message
+                ).replace(/\n/g, "<br/>")}</div>`
+              : ""
+          }
           <p style="margin-top: 24px; font-size: 12px; color: #999;">
-            Sent from the Gypsy Falling Band website booking form
+            Sent from the ${band.name} website booking form
           </p>
         </div>
       `,

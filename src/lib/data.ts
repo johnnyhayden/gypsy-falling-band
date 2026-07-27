@@ -1,14 +1,28 @@
+export const band = {
+  name: "Gold Dust & Wildflowers",
+  city: "Nashville, Tennessee",
+  email: "johnnyhayden+golddust@gmail.com",
+  instagram: "@pettynicksofnash",
+  instagramUrl: "https://instagram.com/pettynicksofnash",
+};
+
 export const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Media", href: "#media" },
+  { label: "Watch", href: "#video" },
+  { label: "The Show", href: "#show" },
   { label: "Set List", href: "#setlist" },
   { label: "Book Us", href: "#booking" },
 ];
 
+export const featuredVideo = {
+  id: "kQ_xaoJmY9o",
+  title: "Promo SIR — Fleetwood Mac",
+};
+
+// Order matters: SetList.tsx assigns icons and accent colors by index.
 export const setListCategories = [
   {
-    title: "Mac Staples",
-    description: "The Fleetwood Mac canon",
+    title: "Fleetwood Mac",
+    description: "The Mac canon",
     songs: [
       "Dreams",
       "Go Your Own Way",
@@ -16,53 +30,38 @@ export const setListCategories = [
       "The Chain",
       "Gold Dust Woman",
       "Landslide",
+      "Everywhere",
+      "Don't Stop",
+      "Say You Love Me",
     ],
   },
   {
-    title: "Petty Classics",
-    description: "The Heartbreakers catalogue",
+    title: "Tom Petty",
+    description: "Petty & the Heartbreakers",
     songs: [
       "American Girl",
-      "Free Fallin'",
       "Mary Jane's Last Dance",
       "Runnin' Down a Dream",
       "I Won't Back Down",
       "Learning to Fly",
+      "Refugee",
+      "Breakdown",
+      "Here Comes My Girl",
+      "The Waiting",
     ],
   },
   {
-    title: "The Duets",
-    description: "Where two legends collide",
+    title: "The Solo Years",
+    description: "Away from the bands",
     songs: [
+      "Edge of Seventeen",
+      "Stand Back",
+      "Leather and Lace",
+      "Free Fallin'",
+      "Wildflowers",
       "Stop Draggin' My Heart Around",
-      "Insider",
-      "I Will Run To You",
     ],
   },
-];
-
-export const videoPlaceholders = [
-  {
-    title: "Stop Draggin' My Heart Around",
-    description: "The iconic Stevie & Tom duet",
-  },
-  {
-    title: "The Chain",
-    description: "Fleetwood Mac's arena anthem",
-  },
-  {
-    title: "Runnin' Down a Dream",
-    description: "Full throttle Tom Petty energy",
-  },
-];
-
-export const photoPlaceholders = [
-  { label: "Live at 3rd & Lindsley", type: "live" },
-  { label: "Promo Shot", type: "promo" },
-  { label: "The Full Band", type: "live" },
-  { label: "Stage Presence", type: "live" },
-  { label: "Studio Session", type: "promo" },
-  { label: "Nashville Nights", type: "live" },
 ];
 
 export const eventTypes = [

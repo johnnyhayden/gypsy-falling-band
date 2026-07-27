@@ -4,7 +4,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const publicDir = path.join(__dirname, "..", "public");
+// The EPK is not public yet — write it outside public/ so it isn't served.
+const outputDir = path.join(__dirname, "..", "private");
 
 async function generateEPK() {
   const doc = await PDFDocument.create();
@@ -17,7 +18,6 @@ async function generateEPK() {
   const timesItalic = await doc.embedFont(StandardFonts.TimesRomanItalic);
 
   // Colors
-  const black = rgb(0.02, 0.02, 0.02);
   const gold = rgb(0.722, 0.525, 0.043);
   const darkGold = rgb(0.831, 0.627, 0.067);
   const cream = rgb(0.96, 0.94, 0.9);
@@ -41,9 +41,9 @@ async function generateEPK() {
   // === HEADER ===
   let y = height - 60;
 
-  page.drawText("GYPSY FALLING", {
+  page.drawText("GOLD DUST & WILDFLOWERS", {
     x: 50, y,
-    size: 36,
+    size: 22,
     font: helveticaBold,
     color: cream,
   });
@@ -51,7 +51,7 @@ async function generateEPK() {
   y -= 6;
   // Gold underline
   page.drawRectangle({
-    x: 50, y, width: 200, height: 1.5,
+    x: 50, y, width: 265, height: 1.5,
     color: gold,
   });
 
@@ -67,7 +67,7 @@ async function generateEPK() {
   const contactX = width - 200;
   let contactY = height - 55;
   const contactLines = [
-    "johnnyhayden+pettynicks@gmail.com",
+    "johnnyhayden+golddust@gmail.com",
     "@pettynicksofnash",
     "Nashville, TN",
   ];
@@ -90,14 +90,14 @@ async function generateEPK() {
 
   // === TAGLINE ===
   y -= 30;
-  page.drawText("Nashville's Premier Tribute to the Legends of", {
+  page.drawText("The timeless music of Fleetwood Mac and Tom Petty", {
     x: 50, y,
     size: 14,
     font: timesItalic,
     color: cream,
   });
   y -= 20;
-  page.drawText("Fleetwood Mac & Tom Petty", {
+  page.drawText("in one unforgettable live show.", {
     x: 50, y,
     size: 14,
     font: timesItalic,
@@ -107,7 +107,7 @@ async function generateEPK() {
   // === ABOUT CARD ===
   y -= 35;
   const aboutCardTop = y;
-  const aboutCardHeight = 130;
+  const aboutCardHeight = 155;
   page.drawRectangle({
     x: 45, y: aboutCardTop - aboutCardHeight + 10,
     width: width - 90, height: aboutCardHeight,
@@ -126,13 +126,15 @@ async function generateEPK() {
 
   y -= 18;
   const aboutText = [
-    "Gypsy Falling Band is a six-piece tribute act based in Nashville, TN, delivering",
-    "the definitive live experience of Fleetwood Mac and Tom Petty & The Heartbreakers.",
+    "Built around soaring female vocals, rich harmonies, and the unmistakable sound of",
+    "Fleetwood Mac, the band also delivers a powerful set of Tom Petty favorites that adds",
+    "energy, variety, and plenty of sing-along moments. Solo years land too - \"Edge of",
+    "Seventeen,\" \"Free Fallin',\" and the \"Stop Draggin' My Heart Around\" duet that",
+    "celebrates the musical connection between Stevie Nicks and Tom Petty.",
     "",
-    "With collective decades of professional performance on Nashville stages and beyond,",
-    "the band brings period-accurate equipment, spot-on characterizations, and an",
-    "authenticity that audiences feel from the first note — the unmistakable 12-string",
-    "jangle, soaring three-part harmonies, and deep respect for the source material.",
+    "Gold Dust & Wildflowers isn't about impersonation - it's about capturing the sound,",
+    "spirit, and emotion of two of rock's most beloved catalogs with exceptional",
+    "musicianship, authentic vocals, and a show audiences know from the very first note.",
   ];
   for (const line of aboutText) {
     if (line === "") { y -= 6; continue; }
@@ -146,7 +148,8 @@ async function generateEPK() {
   }
 
   // === STATS ROW ===
-  y -= 25;
+  // Clears the about card's bottom edge — the cards collide at anything less.
+  y -= 42;
   const stats = [
     { value: "6", label: "MUSICIANS" },
     { value: "2", label: "LEGENDARY ACTS" },
@@ -193,22 +196,26 @@ async function generateEPK() {
   });
 
   y -= 25;
+  // Same order as the set list on the site: Mac, Petty, then the solo years.
+  // Keep in sync with setListCategories in src/lib/data.ts.
   const categories = [
     {
-      title: "THE DUETS",
-      songs: ["Stop Draggin' My Heart Around", "Insider", "I Will Run To You"],
-    },
-    {
       title: "FLEETWOOD MAC",
-      songs: ["Dreams", "Go Your Own Way", "Rhiannon", "The Chain", "Gold Dust Woman", "Landslide"],
+      songs: ["Dreams", "Go Your Own Way", "Rhiannon", "The Chain", "Gold Dust Woman", "Landslide", "Everywhere", "Don't Stop", "Say You Love Me"],
     },
     {
       title: "TOM PETTY",
-      songs: ["American Girl", "Free Fallin'", "Mary Jane's Last Dance", "Runnin' Down a Dream", "I Won't Back Down", "Learning to Fly"],
+      songs: ["American Girl", "Mary Jane's Last Dance", "Runnin' Down a Dream", "I Won't Back Down", "Learning to Fly", "Refugee", "Breakdown", "Here Comes My Girl", "Listen to Her Heart"],
+    },
+    {
+      title: "THE SOLO YEARS",
+      songs: ["Edge of Seventeen", "Stand Back", "Leather and Lace", "Free Fallin'", "Wildflowers", "Stop Draggin' My Heart Around"],
     },
   ];
 
   const colWidth = (width - 100) / 3;
+  // Tightened from 13 to fit nine-song columns above the footer strip.
+  const songLeading = 11;
   categories.forEach((cat, i) => {
     const cx = 50 + i * colWidth;
     let cy = y;
@@ -233,12 +240,15 @@ async function generateEPK() {
         font: helvetica,
         color: dimText,
       });
-      cy -= 13;
+      cy -= songLeading;
     });
   });
 
   // === IDEAL FOR ===
-  y -= 120;
+  // Clear the tallest column rather than a fixed drop: 19pt of title and rule,
+  // then the songs, then breathing room. A magic number collides once a column grows.
+  const tallestColumn = Math.max(...categories.map((c) => c.songs.length));
+  y -= 19 + tallestColumn * songLeading + 16;
   page.drawRectangle({
     x: 50, y: y - 1, width: 3, height: 16,
     color: gold,
@@ -316,7 +326,7 @@ async function generateEPK() {
     font: helveticaBold,
     color: cream,
   });
-  page.drawText("johnnyhayden+pettynicks@gmail.com   |   @pettynicksofnash   |   Nashville, TN", {
+  page.drawText("johnnyhayden+golddust@gmail.com   |   @pettynicksofnash   |   Nashville, TN", {
     x: 50, y: 10,
     size: 7.5,
     font: helvetica,
@@ -325,7 +335,8 @@ async function generateEPK() {
 
   // Save
   const pdfBytes = await doc.save();
-  const outputPath = path.join(publicDir, "gypsy-falling-epk.pdf");
+  fs.mkdirSync(outputDir, { recursive: true });
+  const outputPath = path.join(outputDir, "gold-dust-wildflowers-epk.pdf");
   fs.writeFileSync(outputPath, pdfBytes);
   console.log(`EPK saved to ${outputPath} (${(pdfBytes.length / 1024).toFixed(1)} KB)`);
 }
