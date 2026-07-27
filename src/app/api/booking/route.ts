@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import twilio from "twilio";
 import { band } from "@/lib/data";
+
+const SMS_RECIPIENTS = ["6152942922"];
 
 /*
  * Everything below goes into an HTML email built by string concatenation, so every
  * submitted value has to be escaped on the way in — otherwise a visitor can inject
- * markup (or a link) straight into the band's inbox.
+ * markup (or a link) straight into the band's inbox. The SMS body is plain text,
+ * so it takes the raw values.
  */
 function escapeHtml(value: unknown) {
   return String(value ?? "")
@@ -21,6 +25,17 @@ function row(label: string, value: string) {
     <td style="padding: 8px 0; color: #666; width: 120px;"><strong>${label}</strong></td>
     <td style="padding: 8px 0;">${value}</td>
   </tr>`;
+}
+
+function formatSmsBody(name: string, email: string, eventType?: string, date?: string, venue?: string, message?: string): string {
+  const lines = [
+    `New booking inquiry from ${name} <${email}>`,
+    eventType ? `Event: ${eventType}` : null,
+    date ? `Date: ${date}` : null,
+    venue ? `Venue: ${venue}` : null,
+    message ? `Message: ${message}` : null,
+  ].filter(Boolean);
+  return lines.join("\n");
 }
 
 export async function POST(request: Request) {
@@ -45,7 +60,7 @@ export async function POST(request: Request) {
 
     const safeEmail = escapeHtml(email);
 
-    await transporter.sendMail({
+    const emailPromise = transporter.sendMail({
       from: `"${band.name} Website" <${process.env.GMAIL_USER}>`,
       to: process.env.GMAIL_USER,
       replyTo: email,
@@ -76,9 +91,49 @@ export async function POST(request: Request) {
       `,
     });
 
+    const twilioClient = twilio(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN
+    );
+
+    const smsBody = formatSmsBody(name, email, eventType, date, venue, message);
+
+    const smsPromises = SMS_RECIPIENTS.map((to) =>
+      twilioClient.messages.create({
+        body: smsBody,
+        from: process.env.TWILIO_PHONE_NUMBER,
+        to: `+1${to}`,
+      })
+    );
+
+    const [emailResult, ...smsResults] = await Promise.allSettled([
+      emailPromise,
+      ...smsPromises,
+    ]);
+
+    if (emailResult.status === "rejected") {
+      console.error("Booking email error:", emailResult.reason);
+    }
+
+    smsResults.forEach((result, i) => {
+      if (result.status === "rejected") {
+        console.error(`SMS error for ${SMS_RECIPIENTS[i]}:`, result.reason);
+      }
+    });
+
+    const emailOk = emailResult.status === "fulfilled";
+    const anySmsOk = smsResults.some((r) => r.status === "fulfilled");
+
+    if (!emailOk && !anySmsOk) {
+      return NextResponse.json(
+        { error: "Failed to send inquiry. Please try again." },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Booking email error:", error);
+    console.error("Booking error:", error);
     return NextResponse.json(
       { error: "Failed to send inquiry. Please try again." },
       { status: 500 }
