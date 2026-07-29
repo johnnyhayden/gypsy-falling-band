@@ -2,8 +2,8 @@ export const band = {
   name: "Gypsy Fallin’",
   city: "Nashville, Tennessee",
   email: "johnnyhayden+golddust@gmail.com",
-  instagram: "@pettynicksofnash",
-  instagramUrl: "https://instagram.com/pettynicksofnash",
+  instagram: "@gypsyfallin",
+  instagramUrl: "https://www.instagram.com/gypsyfallin",
 };
 
 export const navLinks = [

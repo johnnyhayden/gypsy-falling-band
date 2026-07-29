@@ -139,8 +139,8 @@ Set the same two variables under **Project Settings → Environment Variables** 
 
 ### Instagram
 
-- **Purpose:** Links visitors to the band's Instagram profile (`@pettynicksofnash`)
-- **Location:** Footer
+- **Purpose:** Links visitors to the band's Instagram profile (`@gypsyfallin`)
+- **Location:** Navbar and footer
 - **No API key required** — static link only
 
 ---
