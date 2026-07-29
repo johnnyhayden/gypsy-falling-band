@@ -24,7 +24,7 @@ export default function FeaturedVideo() {
         <div className="relative aspect-video overflow-hidden rounded-sm border border-noir-700 bg-noir-900">
           {playing ? (
             <iframe
-              src={`https://www.youtube-nocookie.com/embed/${featuredVideo.id}?autoplay=1&rel=0`}
+              src={`https://www.youtube-nocookie.com/embed/${featuredVideo.id}?autoplay=1&rel=0&cc_load_policy=0`}
               title={featuredVideo.title}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
