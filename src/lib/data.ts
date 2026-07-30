@@ -7,7 +7,7 @@
 export const band = {
   name: "The Chain Reaction",
   city: "Nashville, Tennessee",
-  email: "johnnyhayden+chainreaction@gmail.com",
+  email: "booking@thechainreactionband.com",
   instagram: "@thechainreactionband",
   instagramUrl: "https://www.instagram.com/thechainreactionband",
 };

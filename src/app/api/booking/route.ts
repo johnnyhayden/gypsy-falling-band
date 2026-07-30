@@ -3,11 +3,18 @@ import nodemailer from "nodemailer";
 import { band } from "@/lib/data";
 
 /*
- * The full recipient list, independent of whichever Gmail account happens to be
- * doing the sending — GMAIL_USER is the transport credential, not an address to
- * deliver to.
+ * The full recipient list, independent of the account doing the sending —
+ * SMTP_USER is the transport credential, not an address to deliver to.
+ *
+ * band.email is the address the site publishes (the Migadu booking@ box); the
+ * personal inboxes stay on the list alongside it so nobody stops seeing inquiries
+ * while the new mailbox is still being trusted.
  */
-const EMAIL_RECIPIENTS = [band.email, "joefortemusic@gmail.com"];
+const EMAIL_RECIPIENTS = [
+  band.email,
+  "johnnyhayden+chainreaction@gmail.com",
+  "joefortemusic@gmail.com",
+];
 
 /*
  * Text-message alerts ride AT&T's email-to-SMS gateway rather than a messaging
@@ -65,18 +72,28 @@ export async function POST(request: Request) {
       );
     }
 
+    /*
+     * Migadu SMTP, not Gmail: the site now sends *as* the address it publishes,
+     * so inquiry mail is aligned with the domain's SPF and DKIM records instead
+     * of arriving from an unrelated personal Gmail account.
+     *
+     * Port 465 (implicit TLS, hence secure: true) rather than 587 + STARTTLS —
+     * RFC 8314 prefers it and Migadu supports both.
+     */
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.migadu.com",
+      port: 465,
+      secure: true,
       auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASSWORD,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
       },
     });
 
     const safeEmail = escapeHtml(email);
 
     await transporter.sendMail({
-      from: `"${band.name} Website" <${process.env.GMAIL_USER}>`,
+      from: `"${band.name} Website" <${band.email}>`,
       to: EMAIL_RECIPIENTS.join(", "),
       replyTo: email,
       subject: `Booking Inquiry from ${name}${eventType ? ` — ${eventType}` : ""}`,
@@ -112,7 +129,7 @@ export async function POST(request: Request) {
      */
     try {
       await transporter.sendMail({
-        from: `"${band.name} Website" <${process.env.GMAIL_USER}>`,
+        from: `"${band.name} Website" <${band.email}>`,
         to: SMS_GATEWAY_RECIPIENTS.join(", "),
         subject: "",
         text: formatAlertBody(name, eventType, date),
