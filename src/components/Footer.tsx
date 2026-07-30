@@ -1,5 +1,5 @@
+import Image from "next/image";
 import { band } from "@/lib/data";
-import Wordmark from "./Wordmark";
 
 export default function Footer() {
   return (
@@ -7,7 +7,19 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-6">
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row md:gap-8">
           <div className="text-center md:text-left">
-            <Wordmark className="block text-lg text-cream md:text-xl" />
+            {/* Same inline cut as the navbar, a step larger the way the typeset mark
+                it replaces was — the footer set it at text-lg/xl against the bar's
+                text-xs/sm/base. Heights follow the bar's rule: match the width the
+                type occupied, then take 15% back off, which lands it near 199/218px.
+                Centred on its own under md, where the footer column stacks. */}
+            <Image
+              src="/logo-inline.png"
+              alt={band.name}
+              width={512}
+              height={77}
+              unoptimized
+              className="mx-auto h-[30px] w-auto md:mx-0 md:h-[33px]"
+            />
             <p className="mt-2 font-body text-sm text-cream/40">{band.city}</p>
           </div>
 
