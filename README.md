@@ -70,20 +70,22 @@ for a band whose search traffic is people typing those two act names. Don't drop
 
 1. Visitor fills out the booking form (`Name`, `Email`, `Event Date`, `Venue/Location`, `Event Type`, `Message`)
 2. The form `POST`s to `/api/booking`
-3. The API sends an **HTML email** to every address in `EMAIL_RECIPIENTS` via Nodemailer + Gmail SMTP, and awaits it
-4. Only once that has succeeded does it attempt a short **text alert** through a carrier email-to-SMS gateway. This is deliberately sequential and best-effort: a failure here is logged and swallowed, because the inquiry is already safe
-5. The visitor sees a confirmation message; the band is expected to reply within 24 hours
+3. The API sends an **HTML email** to every address in `EMAIL_RECIPIENTS` via Nodemailer + Migadu SMTP, sent *as* `booking@thechainreactionband.com` with the visitor's address as `replyTo`
+4. The visitor sees a confirmation message; the band is expected to reply within 24 hours
 
 **Recipients** are defined at the top of `src/app/api/booking/route.ts`:
 
 ```ts
-const EMAIL_RECIPIENTS = [band.email, "joefortemusic@gmail.com"];
-const SMS_GATEWAY_RECIPIENTS = ["6152942922@txt.att.net"];
+const EMAIL_RECIPIENTS = [
+  band.email,
+  "johnnyhayden+chainreaction@gmail.com",
+  "joefortemusic@gmail.com",
+];
 ```
 
-Add to these arrays to notify additional people on every inquiry. `GMAIL_USER` is the sending
-credential only, **not** a recipient — add it to `EMAIL_RECIPIENTS` explicitly if that inbox
-should also receive inquiries.
+Add to this array to notify additional people on every inquiry. `SMTP_USER` is the sending
+credential only, **not** a recipient — `band.email` (the Migadu booking@ box) must stay on the
+list because it is the inbox the band actually works out of.
 
 ---
 
@@ -118,10 +120,13 @@ scripts/
 public/
 ├── band-photo-july2026.jpg           # Hero photograph
 ├── logo-lockup.png                   # Hero mark, trimmed to the artwork — used by the site
-├── logo-inline.png                   # Navbar mark, trimmed and pre-sized to 512px — used by the site
-├── thechainreactionlogo_trans.png    # Source artwork for the lockup, 1024² with transparent padding
-├── thechainreactionlogo.png          # Source artwork on a solid ground (unused)
-└── logo_cream_inline_trans.png       # Source artwork for the inline mark, 1536×1024
+└── logo-inline.png                   # Navbar mark, trimmed and pre-sized to 512px — used by the site
+
+assets/logos/                         # Source artwork — tracked, but outside public/ so it
+│                                       is never served or bundled into the deploy
+├── thechainreactionlogo_trans.png    # Source for the lockup, 1024² with transparent padding
+├── thechainreactionlogo.png          # Source on a solid ground (unused)
+└── logo_cream_inline_trans.png       # Source for the inline mark, 1536×1024
 
 private/
 └── the-chain-reaction-epk.pdf        # Generated EPK — gitignored, not served
@@ -153,7 +158,7 @@ Two constraints when editing the generator:
 | Language | TypeScript 5 |
 | Styling | Tailwind CSS 4 — CSS-first, configured via `@theme` in `globals.css` (there is no `tailwind.config.js`) |
 | Fonts | Google Fonts via `next/font` — Bodoni Moda (headings), Barlow (body) |
-| Email | Nodemailer 8 + Gmail SMTP |
+| Email | Nodemailer 8 + Migadu SMTP |
 | PDF | `pdf-lib` (dev dependency, EPK generation only) |
 | Hosting | Vercel |
 
@@ -168,31 +173,33 @@ All secrets are stored in environment variables — never committed to the repos
 Create a `.env.local` file in the project root:
 
 ```env
-# Gmail — email notifications
-GMAIL_USER=your-gmail-address@gmail.com
-GMAIL_APP_PASSWORD=your-16-character-app-password
+# Migadu SMTP — booking inquiry emails
+SMTP_USER=booking@thechainreactionband.com
+SMTP_PASSWORD=the-mailbox-password
 ```
 
 ### Production (Vercel)
 
 Set the same two variables under **Project Settings → Environment Variables**.
 
-`NEXT_PUBLIC_SITE_URL` is optional. It sets `metadataBase` for absolute OG/canonical URLs; when
-unset the site falls back to the default `*.vercel.app` domain. Set it once a real domain is live.
+`NEXT_PUBLIC_SITE_URL` is optional and normally left unset. `siteUrl` in `src/lib/data.ts`
+already defaults to the live domain, `https://thechainreactionband.com`, which is what feeds
+`metadataBase`, the canonical tag, the OG URLs, `robots.txt` and `sitemap.xml`. Set the variable
+only to point a preview deploy at a different origin.
 
 ---
 
 ## External Services
 
-### Gmail (Email)
+### Migadu (Email)
 
-- **Purpose:** Delivers HTML-formatted booking inquiry emails to the band's inbox
-- **Service:** Gmail SMTP via Nodemailer
-- **Auth:** Requires a Gmail [App Password](https://support.google.com/accounts/answer/185833) (not the regular account password — 2FA must be enabled on the account)
-- **Behavior:** Sent `from` the configured Gmail address with the band name as the display name, and `replyTo` set to the visitor's email so the band can reply directly
+- **Purpose:** Delivers HTML-formatted booking inquiry emails to the band's inboxes
+- **Service:** Migadu SMTP via Nodemailer — `smtp.migadu.com:465`, implicit TLS
+- **Auth:** The `booking@thechainreactionband.com` mailbox credentials (`SMTP_USER` / `SMTP_PASSWORD`)
+- **Behavior:** Sent `from` the band's own `booking@` address with the band name as the display name — so the mail aligns with the domain's SPF/DKIM records — and `replyTo` set to the visitor's email so the band can reply directly
 - **Recipients:** every address in `EMAIL_RECIPIENTS` in `src/app/api/booking/route.ts`
-- **Config vars:** `GMAIL_USER`, `GMAIL_APP_PASSWORD`
-- **Text alerts:** a short second message goes to `SMS_GATEWAY_RECIPIENTS` in the same file — carrier email-to-SMS addresses (`6152942922@txt.att.net` for AT&T; `@vtext.com` Verizon, `@tmomail.net` T-Mobile). This replaced a Twilio integration, since a US toll-free sender needs carrier verification before it can message handsets at all. The gateways are unofficial and are being retired carrier by carrier, so the send is best-effort: a failure is logged and the inquiry still succeeds on the strength of the email
+- **Config vars:** `SMTP_USER`, `SMTP_PASSWORD`
+- **History:** This replaced Gmail SMTP (which sent from an unrelated personal address) and, before that, a Twilio SMS integration and carrier email-to-SMS gateways. There are no text alerts anymore — everyone who needs to know about an inquiry gets it in an inbox
 
 ### YouTube
 
@@ -247,5 +254,5 @@ overlay still fires), **1920×1080**, and **768×1024** (must fall back to stack
 ## Deployment
 
 The project is configured for zero-config deployment on Vercel. Push to `main` and Vercel will
-build and deploy automatically. Ensure `GMAIL_USER` and `GMAIL_APP_PASSWORD` are set in the
+build and deploy automatically. Ensure `SMTP_USER` and `SMTP_PASSWORD` are set in the
 Vercel project before deploying.

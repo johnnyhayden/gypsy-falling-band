@@ -4,6 +4,14 @@
  * component that had hardcoded it, so every surface that names the band —
  * metadata, copy, the wordmark, the booking email — reads from this object.
  */
+/*
+ * The one canonical origin. metadata, robots.ts and sitemap.ts all read this,
+ * so the site never advertises two different domains to crawlers. Override via
+ * NEXT_PUBLIC_SITE_URL only for preview deploys.
+ */
+export const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://thechainreactionband.com";
+
 export const band = {
   name: "The Chain Reaction",
   city: "Nashville, Tennessee",

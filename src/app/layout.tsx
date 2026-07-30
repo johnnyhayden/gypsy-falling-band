@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Bodoni_Moda, Barlow } from "next/font/google";
-import { band } from "@/lib/data";
+import { band, siteUrl } from "@/lib/data";
 import "./globals.css";
 
 /*
@@ -21,14 +21,15 @@ const barlow = Barlow({
   display: "swap",
 });
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  "https://fleetwoodmac-tompetty-band.vercel.app";
+const title = `${band.name} | Fleetwood Mac & Tom Petty Tribute Band in Nashville`;
+const description = `${band.name} is a Nashville-area Fleetwood Mac and Tom Petty tribute band available for venues, community events and private bookings throughout Middle Tennessee.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: `${band.name} | Fleetwood Mac & Tom Petty Tribute Band`,
-  description: `${band.name} brings together the timeless music of Fleetwood Mac and Tom Petty in one unforgettable live show. Book the band for festivals, weddings, corporate events, and venues.`,
+  // The *.vercel.app deploy serves the same page; this points crawlers at one of them.
+  alternates: { canonical: "/" },
+  title,
+  description,
   keywords: [
     band.name,
     "Fleetwood Mac tribute",
@@ -38,9 +39,8 @@ export const metadata: Metadata = {
     "live music Nashville",
   ],
   openGraph: {
-    title: band.name,
-    description:
-      "The timeless music of Fleetwood Mac and Tom Petty in one unforgettable live show.",
+    title,
+    description,
     type: "website",
     url: siteUrl,
     images: [
@@ -54,6 +54,27 @@ export const metadata: Metadata = {
   },
 };
 
+/*
+ * Structured data for search engines. MusicGroup rather than LocalBusiness —
+ * the band is the entity being searched for, not a storefront.
+ */
+const bandSchema = {
+  "@context": "https://schema.org",
+  "@type": "MusicGroup",
+  name: band.name,
+  url: siteUrl,
+  description:
+    "A Fleetwood Mac and Tom Petty tribute band based in the Nashville and Franklin, Tennessee area.",
+  genre: ["Rock", "Classic Rock", "Tribute"],
+  email: band.email,
+  areaServed: [
+    "Nashville, Tennessee",
+    "Franklin, Tennessee",
+    "Middle Tennessee",
+  ],
+  sameAs: [band.instagramUrl],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -61,7 +82,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${bodoni.variable} ${barlow.variable}`}>
-      <body>{children}</body>
+      <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(bandSchema).replace(/</g, "\\u003c"),
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }
