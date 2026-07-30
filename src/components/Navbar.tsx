@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { band, navLinks } from "@/lib/data";
 import Wordmark from "./Wordmark";
 
@@ -38,13 +39,37 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6">
         <a
           href="#"
-          className="text-cream transition-colors hover:text-gold-300"
+          className="opacity-90 transition-opacity hover:opacity-100"
           aria-label={`${band.name} — back to top`}
         >
-          {/* Eighteen characters against the thirteen the bar was last sized for, so
-              the mark steps back down a size — at md the four links and the Instagram
-              icon start at the halfway mark, and the old text-lg ran into them. */}
-          <Wordmark className="text-xs sm:text-sm md:text-base" />
+          {/* The inline cut of the mark: one line, no rule and no tribute label, which
+              is what makes it survive at bar height where the hero's stacked lockup
+              does not.
+
+              Sized by height, but the heights are chosen so the mark comes out roughly
+              as wide as the type it replaced (~156 / 181 / 217px) — the bar was tuned
+              around that width, and at md the nav links start near the halfway mark.
+              At 6.8:1 the drawn letters are far chunkier than 18 characters of Bodoni,
+              so matching the width means the mark stands taller than the old text did
+              and the bar grows with it. That reads as a logo rather than as oversized
+              type, which is the point.
+
+              The anchor fades rather than shifting colour: hover:text-gold-300 did
+              nothing to an image, and the artwork carries its own cream. */}
+          {/* unoptimized, and the file is pre-sized to 512px rather than shipped at
+              full resolution: the mark never renders wider than ~217px, so 512 covers
+              a 2x screen with room to spare and the optimizer has nothing left to save.
+              It also keeps the bar's mark off the /_next/image path, which hung on this
+              particular asset in dev and left the navbar with an empty box. */}
+          <Image
+            src="/logo-inline.png"
+            alt=""
+            width={512}
+            height={77}
+            loading="eager"
+            unoptimized
+            className="h-6 w-auto sm:h-7 md:h-8"
+          />
         </a>
 
         <div className="hidden items-center gap-8 md:flex">

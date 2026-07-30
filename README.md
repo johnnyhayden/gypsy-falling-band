@@ -48,8 +48,13 @@ There are two forms of the mark, and they are not interchangeable:
 - **`public/logo-lockup.png`** — the drawn lockup: name, chain rule, and the line "A Fleetwood
   Mac & Tom Petty tribute". Used in the hero only. Its hairline outlines and small-caps tagline
   stop resolving below roughly 40px tall.
-- **`src/components/Wordmark.tsx`** — the name typeset in Bodoni Moda, all cream. Stands in for
-  the lockup in the navbar and footer, where the artwork would be illegible.
+- **`public/logo-inline.png`** — the inline cut: one line, no rule and no tribute label. Used in
+  the navbar, where it survives at bar height because it drops the lockup's other two parts. It is
+  trimmed to its artwork and pre-sized to 512px wide (it never renders wider than ~217px), and is
+  served `unoptimized` — the optimizer has nothing left to save on it, and routing it through
+  `/_next/image` hung on this asset in dev and left the navbar with an empty box.
+- **`src/components/Wordmark.tsx`** — the name typeset in Bodoni Moda, all cream. Still used by
+  the footer and the mobile menu overlay.
 
 Because the lockup's tribute line is pixels rather than text, the hero image's `alt` carries
 "a Fleetwood Mac & Tom Petty tribute" — that phrasing is doing real SEO and accessibility work
@@ -109,8 +114,10 @@ scripts/
 public/
 ├── band-photo-july2026.jpg           # Hero photograph
 ├── logo-lockup.png                   # Hero mark, trimmed to the artwork — used by the site
-├── thechainreactionlogo_trans.png    # Source artwork, 1024² with transparent padding
-└── thechainreactionlogo.png          # Source artwork on a solid ground (unused)
+├── logo-inline.png                   # Navbar mark, trimmed and pre-sized to 512px — used by the site
+├── thechainreactionlogo_trans.png    # Source artwork for the lockup, 1024² with transparent padding
+├── thechainreactionlogo.png          # Source artwork on a solid ground (unused)
+└── logo_cream_inline_trans.png       # Source artwork for the inline mark, 1536×1024
 
 private/
 └── the-chain-reaction-epk.pdf        # Generated EPK — gitignored, not served
