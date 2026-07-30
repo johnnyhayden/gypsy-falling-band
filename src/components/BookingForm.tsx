@@ -69,7 +69,7 @@ export default function BookingForm() {
             </h2>
 
             <p className="font-body text-lg text-cream/70 leading-relaxed mb-4 md:mb-6">
-              Festival stage, wedding reception, corporate gala, or a Saturday
+              Festival stage, private party, corporate gala, or a Saturday
               night at your favorite venue — tell us about the room and we&apos;ll
               build the night around it.
             </p>
