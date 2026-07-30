@@ -46,18 +46,16 @@ export default function Navbar() {
               is what makes it survive at bar height where the hero's stacked lockup
               does not.
 
-              Sized by height, but the heights are chosen so the mark comes out roughly
-              as wide as the type it replaced (~156 / 181 / 217px) — the bar was tuned
-              around that width, and at md the nav links start near the halfway mark.
-              At 6.8:1 the drawn letters are far chunkier than 18 characters of Bodoni,
-              so matching the width means the mark stands taller than the old text did
-              and the bar grows with it. That reads as a logo rather than as oversized
-              type, which is the point.
+              Sized by height. Matching the width of the type it replaced put the mark
+              at 24/28/32px, which read a shade heavy against the links — at 6.6:1 the
+              drawn letters carry far more ink than 18 characters of Bodoni do at the
+              same width. These are that starting point less 15%, so the mark sits back
+              a step and the bar keeps more air, landing around 132 / 159 / 179px wide.
 
               The anchor fades rather than shifting colour: hover:text-gold-300 did
               nothing to an image, and the artwork carries its own cream. */}
           {/* unoptimized, and the file is pre-sized to 512px rather than shipped at
-              full resolution: the mark never renders wider than ~217px, so 512 covers
+              full resolution: the mark never renders wider than ~180px, so 512 covers
               a 2x screen with room to spare and the optimizer has nothing left to save.
               It also keeps the bar's mark off the /_next/image path, which hung on this
               particular asset in dev and left the navbar with an empty box. */}
@@ -68,7 +66,7 @@ export default function Navbar() {
             height={77}
             loading="eager"
             unoptimized
-            className="h-6 w-auto sm:h-7 md:h-8"
+            className="h-[20px] w-auto sm:h-[24px] md:h-[27px]"
           />
         </a>
 
