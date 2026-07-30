@@ -1,22 +1,67 @@
+import Image from "next/image";
 import { setListCategories } from "@/lib/data";
 import WildflowerRule from "./WildflowerRule";
 
+/* The marks are stored white-on-transparent so a CSS mask can pour each
+   card's accent through them — same file works in wine or gold. */
+function MaskedLogo({
+  src,
+  label,
+  className,
+}: {
+  src: string;
+  label: string;
+  className: string;
+}) {
+  return (
+    <span
+      role="img"
+      aria-label={label}
+      className={`block bg-current ${className}`}
+      style={{
+        maskImage: `url('${src}')`,
+        WebkitMaskImage: `url('${src}')`,
+        maskRepeat: "no-repeat",
+        WebkitMaskRepeat: "no-repeat",
+        maskSize: "contain",
+        WebkitMaskSize: "contain",
+      }}
+    />
+  );
+}
+
 const icons = [
-  // Vinyl for Mac
-  <svg key="vinyl" className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="10" strokeWidth={1.25} />
-    <circle cx="12" cy="12" r="3" strokeWidth={1.25} />
-    <circle cx="12" cy="12" r="6" strokeWidth={1.25} strokeDasharray="2 3" />
-  </svg>,
-  // Lightning bolt for Petty
-  <svg key="bolt" className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.25} d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-  </svg>,
-  // Microphone for the solo years
-  <svg key="mic" className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.25} d="M12 1a4 4 0 00-4 4v6a4 4 0 008 0V5a4 4 0 00-4-4z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.25} d="M19 10v1a7 7 0 01-14 0v-1M12 18v4m-3 0h6" />
-  </svg>,
+  // The Rumours-era wordmark
+  <MaskedLogo
+    key="mac-logo"
+    src="/logos/fleetwood-mac.png"
+    label="Fleetwood Mac"
+    className="h-[22px] w-[104px]"
+  />,
+  /* The winged-heart logo keeps its own red and cream — tinting it gold would
+     lose the mark, so it opts out of the accent system. */
+  <Image
+    key="petty-logo"
+    src="/logos/tom-petty-heartbreakers.png"
+    alt="Tom Petty and the Heartbreakers"
+    width={288}
+    height={153}
+    unoptimized
+    className="h-8 w-auto"
+  />,
+  // The Bella Donna script beside Petty's signature
+  <div key="solo-logos" className="flex items-center gap-4">
+    <MaskedLogo
+      src="/logos/stevie-nicks.png"
+      label="Stevie Nicks"
+      className="h-7 w-[69px]"
+    />
+    <MaskedLogo
+      src="/logos/tom-petty-solo.png"
+      label="Tom Petty"
+      className="h-7 w-[49px]"
+    />
+  </div>,
 ];
 
 /*
@@ -68,7 +113,9 @@ export default function SetList() {
               <div className={`h-px ${accents[i].bar}`} />
 
               <div className="p-6 md:p-8">
-                <div className={`${accents[i].icon} mb-4 md:mb-6`}>
+                {/* Fixed row height: the marks range from 22px to 32px tall,
+                    and the titles below must sit level across the grid. */}
+                <div className={`${accents[i].icon} mb-4 flex h-8 items-center justify-center md:mb-6`}>
                   {icons[i]}
                 </div>
 

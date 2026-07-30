@@ -36,7 +36,7 @@ export const featuredVideo = {
 export const setListCategories = [
   {
     title: "Fleetwood Mac",
-    description: "The Mac canon",
+    description: "The Fleetwood Mac canon",
     songs: [
       "Dreams",
       "Go Your Own Way",
