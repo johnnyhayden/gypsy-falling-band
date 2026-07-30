@@ -22,7 +22,7 @@ const outputDir = path.join(__dirname, "..", "private");
 const BAND = {
   name: "The Chain Reaction",
   nameUpper: "THE CHAIN REACTION",
-  email: "johnnyhayden+chainreaction@gmail.com",
+  email: "booking@thechainreactionband.com",
   instagram: "@thechainreactionband",
   city: "Nashville, TN",
 };

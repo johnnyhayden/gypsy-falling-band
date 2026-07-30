@@ -3,34 +3,21 @@ import nodemailer from "nodemailer";
 import { band } from "@/lib/data";
 
 /*
- * The full recipient list, independent of whichever Gmail account happens to be
- * doing the sending — GMAIL_USER is the transport credential, not an address to
- * deliver to.
- */
-const EMAIL_RECIPIENTS = [band.email, "joefortemusic@gmail.com"];
-
-/*
- * Text-message alerts ride AT&T's email-to-SMS gateway rather than a messaging
- * provider — a Twilio sender would have meant toll-free carrier verification for
- * what is one notification to one phone.
+ * The full recipient list, independent of the account doing the sending —
+ * SMTP_USER is the transport credential, not an address to deliver to.
  *
- * The tradeoff is that these gateways are unofficial, rate-limited, and being
- * quietly retired carrier by carrier, so this is strictly a best-effort nudge:
- * it gets its own short plain-text send, and its failure is logged rather than
- * surfaced. The inquiry itself lives or dies with the real email above.
+ * band.email is the address the site publishes (the Migadu booking@ box) and has
+ * to stay on this list — it is the inbox the band actually works out of. The
+ * personal addresses sit alongside it so nobody stops seeing inquiries.
+ *
+ * Email only: no carrier email-to-SMS gateways here. Everyone who needs to know
+ * about an inquiry gets it in an inbox.
  */
-const SMS_GATEWAY_RECIPIENTS = ["6152942922@txt.att.net"];
-
-/* Gateways truncate hard, so say who and what, and let the email carry the rest. */
-function formatAlertBody(
-  name: string,
-  eventType?: string,
-  date?: string
-): string {
-  const detail = [eventType, date].filter(Boolean).join(" ");
-  const line = `New booking inquiry: ${name}${detail ? ` — ${detail}` : ""}. Details in email.`;
-  return line.length > 155 ? `${line.slice(0, 152)}...` : line;
-}
+const EMAIL_RECIPIENTS = [
+  band.email,
+  "johnnyhayden+chainreaction@gmail.com",
+  "joefortemusic@gmail.com",
+];
 
 /*
  * Everything below goes into an HTML email built by string concatenation, so every
@@ -65,18 +52,28 @@ export async function POST(request: Request) {
       );
     }
 
+    /*
+     * Migadu SMTP, not Gmail: the site now sends *as* the address it publishes,
+     * so inquiry mail is aligned with the domain's SPF and DKIM records instead
+     * of arriving from an unrelated personal Gmail account.
+     *
+     * Port 465 (implicit TLS, hence secure: true) rather than 587 + STARTTLS —
+     * RFC 8314 prefers it and Migadu supports both.
+     */
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.migadu.com",
+      port: 465,
+      secure: true,
       auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASSWORD,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
       },
     });
 
     const safeEmail = escapeHtml(email);
 
     await transporter.sendMail({
-      from: `"${band.name} Website" <${process.env.GMAIL_USER}>`,
+      from: `"${band.name} Website" <${band.email}>`,
       to: EMAIL_RECIPIENTS.join(", "),
       replyTo: email,
       subject: `Booking Inquiry from ${name}${eventType ? ` — ${eventType}` : ""}`,
@@ -105,21 +102,6 @@ export async function POST(request: Request) {
         </div>
       `,
     });
-
-    /*
-     * Deliberately after the await above: the inquiry is already safe by this
-     * point, so a dead gateway costs the visitor nothing.
-     */
-    try {
-      await transporter.sendMail({
-        from: `"${band.name} Website" <${process.env.GMAIL_USER}>`,
-        to: SMS_GATEWAY_RECIPIENTS.join(", "),
-        subject: "",
-        text: formatAlertBody(name, eventType, date),
-      });
-    } catch (alertError) {
-      console.warn("SMS gateway alert failed:", alertError);
-    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

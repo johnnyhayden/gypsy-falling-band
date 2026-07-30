@@ -21,6 +21,15 @@ export default function Footer() {
               className="mx-auto h-[30px] w-auto md:mx-0 md:h-[33px]"
             />
             <p className="mt-2 font-body text-sm text-cream/40">{band.city}</p>
+            {/* Spelled out, not just hung off the envelope icon — a promoter
+                scanning the page should be able to read the booking address
+                (or copy it) without hunting for a mailto. */}
+            <a
+              href={`mailto:${band.email}`}
+              className="mt-1 inline-block font-body text-sm text-cream/40 transition-colors duration-300 hover:text-gold-300"
+            >
+              {band.email}
+            </a>
           </div>
 
           <div className="flex flex-col items-center gap-4">
