@@ -12,11 +12,15 @@ export default function Footer() {
                 text-xs/sm/base. Heights follow the bar's rule: match the width the
                 type occupied, then take 15% back off, which lands it near 199/218px.
                 Centred on its own under md, where the footer column stacks. */}
+            {/* eager despite being below the fold: the navbar already fetched this
+                exact URL, so lazy saves nothing — and Next tracks images by src, so
+                a lazy entry here shadows the navbar's and trips the LCP warning. */}
             <Image
               src="/logo-inline.png"
               alt={band.name}
               width={512}
               height={77}
+              loading="eager"
               unoptimized
               className="mx-auto h-[30px] w-auto md:mx-0 md:h-[33px]"
             />
