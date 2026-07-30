@@ -6,38 +6,18 @@ import { band } from "@/lib/data";
  * The full recipient list, independent of the account doing the sending —
  * SMTP_USER is the transport credential, not an address to deliver to.
  *
- * band.email is the address the site publishes (the Migadu booking@ box); the
- * personal inboxes stay on the list alongside it so nobody stops seeing inquiries
- * while the new mailbox is still being trusted.
+ * band.email is the address the site publishes (the Migadu booking@ box) and has
+ * to stay on this list — it is the inbox the band actually works out of. The
+ * personal addresses sit alongside it so nobody stops seeing inquiries.
+ *
+ * Email only: no carrier email-to-SMS gateways here. Everyone who needs to know
+ * about an inquiry gets it in an inbox.
  */
 const EMAIL_RECIPIENTS = [
   band.email,
   "johnnyhayden+chainreaction@gmail.com",
   "joefortemusic@gmail.com",
 ];
-
-/*
- * Text-message alerts ride AT&T's email-to-SMS gateway rather than a messaging
- * provider — a Twilio sender would have meant toll-free carrier verification for
- * what is one notification to one phone.
- *
- * The tradeoff is that these gateways are unofficial, rate-limited, and being
- * quietly retired carrier by carrier, so this is strictly a best-effort nudge:
- * it gets its own short plain-text send, and its failure is logged rather than
- * surfaced. The inquiry itself lives or dies with the real email above.
- */
-const SMS_GATEWAY_RECIPIENTS = ["6152942922@txt.att.net"];
-
-/* Gateways truncate hard, so say who and what, and let the email carry the rest. */
-function formatAlertBody(
-  name: string,
-  eventType?: string,
-  date?: string
-): string {
-  const detail = [eventType, date].filter(Boolean).join(" ");
-  const line = `New booking inquiry: ${name}${detail ? ` — ${detail}` : ""}. Details in email.`;
-  return line.length > 155 ? `${line.slice(0, 152)}...` : line;
-}
 
 /*
  * Everything below goes into an HTML email built by string concatenation, so every
@@ -122,21 +102,6 @@ export async function POST(request: Request) {
         </div>
       `,
     });
-
-    /*
-     * Deliberately after the await above: the inquiry is already safe by this
-     * point, so a dead gateway costs the visitor nothing.
-     */
-    try {
-      await transporter.sendMail({
-        from: `"${band.name} Website" <${band.email}>`,
-        to: SMS_GATEWAY_RECIPIENTS.join(", "),
-        subject: "",
-        text: formatAlertBody(name, eventType, date),
-      });
-    } catch (alertError) {
-      console.warn("SMS gateway alert failed:", alertError);
-    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
