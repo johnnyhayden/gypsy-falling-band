@@ -115,12 +115,12 @@ export default function Hero() {
           />
         </h1>
 
-        {/* The lockup already reads "a Fleetwood Mac & Tom Petty tribute" under its
-            rule, so this line no longer names the acts — it would be the third time
-            in four inches. The alt text above carries them for anything that can't
-            see the artwork. */}
+        {/* This names the acts even though the lockup's own rule already does. The
+            repetition is deliberate: the lockup's tribute line is pixels, and at the
+            tighter windows it shrinks past reading, so this is the one place the two
+            names are always legible and always real text. */}
         <p className="anim-rise anim-delay-2 mt-5 max-w-md font-heading text-base italic leading-relaxed text-cream/80 sm:mt-6 sm:max-w-3xl hero-over:mt-5 hero-over:text-lg">
-          Every song you already know, played like you remember it.
+          Two catalogs. Fleetwood Mac &amp; Tom Petty. Every song you already know.
         </p>
 
         <div className="anim-rise anim-delay-3 mt-7 flex gap-3 sm:gap-4 hero-over:mt-6">
