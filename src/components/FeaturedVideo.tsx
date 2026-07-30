@@ -1,12 +1,109 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { featuredVideo } from "@/lib/data";
 import WildflowerRule from "./WildflowerRule";
 
+/* Minimal typings for the parts of the IFrame API we touch. */
+interface YTPlayer {
+  setOption: (module: string, option: string, value: unknown) => void;
+  destroy: () => void;
+}
+
+interface YTNamespace {
+  Player: new (
+    el: HTMLElement,
+    config: {
+      host: string;
+      videoId: string;
+      width: string;
+      height: string;
+      playerVars: Record<string, string | number>;
+      events: {
+        onReady?: (event: { target: YTPlayer }) => void;
+        onApiChange?: (event: { target: YTPlayer }) => void;
+      };
+    }
+  ) => YTPlayer;
+}
+
+let apiPromise: Promise<YTNamespace> | null = null;
+
+function loadYouTubeApi(): Promise<YTNamespace> {
+  if (!apiPromise) {
+    apiPromise = new Promise((resolve) => {
+      const w = window as unknown as {
+        YT?: YTNamespace & { Player?: unknown };
+        onYouTubeIframeAPIReady?: () => void;
+      };
+      if (w.YT?.Player) {
+        resolve(w.YT);
+        return;
+      }
+      const prev = w.onYouTubeIframeAPIReady;
+      w.onYouTubeIframeAPIReady = () => {
+        prev?.();
+        resolve(w.YT as YTNamespace);
+      };
+      const script = document.createElement("script");
+      script.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(script);
+    });
+  }
+  return apiPromise;
+}
+
 export default function FeaturedVideo() {
   const [playing, setPlaying] = useState(false);
+  const mountRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!playing) return;
+    let cancelled = false;
+    let player: YTPlayer | undefined;
+
+    loadYouTubeApi().then((YT) => {
+      if (cancelled || !mountRef.current) return;
+      /*
+       * The API replaces this inner div with its iframe, so it lives inside a
+       * React-owned wrapper that React never needs to reconcile against.
+       */
+      const target = document.createElement("div");
+      mountRef.current.appendChild(target);
+      player = new YT.Player(target, {
+        host: "https://www.youtube-nocookie.com",
+        videoId: featuredVideo.id,
+        width: "100%",
+        height: "100%",
+        playerVars: { autoplay: 1, rel: 0 },
+        events: {
+          /*
+           * No URL param can force captions off — cc_load_policy only forces
+           * them on, and a viewer's sticky CC preference wins otherwise.
+           * onApiChange fires when the captions module loads; deselecting the
+           * track there (setOption over unloadModule — unload alone doesn't
+           * stick, the sticky preference reloads it) is what turns them off.
+           * Both module names, since it's "cc" on some player builds.
+           */
+          onApiChange: (event) => {
+            for (const module of ["captions", "cc"]) {
+              try {
+                event.target.setOption(module, "track", {});
+              } catch {
+                /* module not loaded under this name */
+              }
+            }
+          },
+        },
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      player?.destroy();
+    };
+  }, [playing]);
 
   return (
     <section id="video" className="bg-noir-950 py-14 md:py-24">
@@ -23,12 +120,10 @@ export default function FeaturedVideo() {
 
         <div className="relative aspect-video overflow-hidden rounded-sm border border-noir-700 bg-noir-900">
           {playing ? (
-            <iframe
-              src={`https://www.youtube-nocookie.com/embed/${featuredVideo.id}?autoplay=1&rel=0&cc_load_policy=0`}
-              title={featuredVideo.title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-              className="absolute inset-0 h-full w-full"
+            <div
+              ref={mountRef}
+              aria-label={featuredVideo.title}
+              className="absolute inset-0 [&>iframe]:h-full [&>iframe]:w-full"
             />
           ) : (
             /*
