@@ -7,6 +7,26 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // The EPK is not public yet — write it outside public/ so it isn't served.
 const outputDir = path.join(__dirname, "..", "private");
 
+/*
+ * Mirrors `band` in src/lib/data.ts, which is the source of truth — this is a
+ * plain .mjs script run outside the Next build, so it can't import the TypeScript
+ * module without pulling in a loader for one object. Kept here deliberately, but
+ * it does have to be updated alongside data.ts: the last two renames were missed
+ * here, and this file shipped a dead address and a two-names-ago Instagram handle
+ * long after the site itself had moved on.
+ *
+ * Straight apostrophes throughout, not curly. The PDF is set in the standard
+ * Helvetica, whose WinAnsi encoding has no U+2019 — a curly quote anywhere in the
+ * strings below throws at encode time.
+ */
+const BAND = {
+  name: "The Chain Reaction",
+  nameUpper: "THE CHAIN REACTION",
+  email: "johnnyhayden+chainreaction@gmail.com",
+  instagram: "@thechainreactionband",
+  city: "Nashville, TN",
+};
+
 async function generateEPK() {
   const doc = await PDFDocument.create();
   const page = doc.addPage([612, 792]); // US Letter
@@ -41,7 +61,7 @@ async function generateEPK() {
   // === HEADER ===
   let y = height - 60;
 
-  const title = "GYPSY FALLIN'";
+  const title = BAND.nameUpper;
   const titleSize = 22;
   page.drawText(title, {
     x: 50, y,
@@ -71,11 +91,7 @@ async function generateEPK() {
   // Right-aligned contact block
   const contactX = width - 200;
   let contactY = height - 55;
-  const contactLines = [
-    "johnnyhayden+golddust@gmail.com",
-    "@pettynicksofnash",
-    "Nashville, TN",
-  ];
+  const contactLines = [BAND.email, BAND.instagram, BAND.city];
   for (const line of contactLines) {
     page.drawText(line, {
       x: contactX, y: contactY,
@@ -137,7 +153,7 @@ async function generateEPK() {
     "Seventeen,\" \"Free Fallin',\" and the \"Stop Draggin' My Heart Around\" duet that",
     "celebrates the musical connection between Stevie Nicks and Tom Petty.",
     "",
-    "Gypsy Fallin' isn't about impersonation - it's about capturing the sound,",
+    `${BAND.name} isn't about impersonation - it's about capturing the sound,`,
     "spirit, and emotion of two of rock's most beloved catalogs with exceptional",
     "musicianship, authentic vocals, and a show audiences know from the very first note.",
   ];
@@ -331,7 +347,7 @@ async function generateEPK() {
     font: helveticaBold,
     color: cream,
   });
-  page.drawText("johnnyhayden+golddust@gmail.com   |   @pettynicksofnash   |   Nashville, TN", {
+  page.drawText(`${BAND.email}   |   ${BAND.instagram}   |   ${BAND.city}`, {
     x: 50, y: 10,
     size: 7.5,
     font: helvetica,
@@ -341,7 +357,7 @@ async function generateEPK() {
   // Save
   const pdfBytes = await doc.save();
   fs.mkdirSync(outputDir, { recursive: true });
-  const outputPath = path.join(outputDir, "gypsy-fallin-epk.pdf");
+  const outputPath = path.join(outputDir, "the-chain-reaction-epk.pdf");
   fs.writeFileSync(outputPath, pdfBytes);
   console.log(`EPK saved to ${outputPath} (${(pdfBytes.length / 1024).toFixed(1)} KB)`);
 }

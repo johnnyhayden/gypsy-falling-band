@@ -41,9 +41,10 @@ export default function Navbar() {
           className="text-cream transition-colors hover:text-gold-300"
           aria-label={`${band.name} — back to top`}
         >
-          {/* Two short words rather than the four-word name the bar was sized for,
-              so the mark can carry a step more size without crowding the links. */}
-          <Wordmark className="text-sm sm:text-base md:text-lg" />
+          {/* Eighteen characters against the thirteen the bar was last sized for, so
+              the mark steps back down a size — at md the four links and the Instagram
+              icon start at the halfway mark, and the old text-lg ran into them. */}
+          <Wordmark className="text-xs sm:text-sm md:text-base" />
         </a>
 
         <div className="hidden items-center gap-8 md:flex">

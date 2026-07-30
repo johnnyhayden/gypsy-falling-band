@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Bodoni_Moda, Barlow } from "next/font/google";
+import { band } from "@/lib/data";
 import "./globals.css";
 
 /*
@@ -26,11 +27,10 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Gypsy Fallin’ | Fleetwood Mac & Tom Petty Tribute Band",
-  description:
-    "Gypsy Fallin’ brings together the timeless music of Fleetwood Mac and Tom Petty in one unforgettable live show. Book the band for festivals, weddings, corporate events, and venues.",
+  title: `${band.name} | Fleetwood Mac & Tom Petty Tribute Band`,
+  description: `${band.name} brings together the timeless music of Fleetwood Mac and Tom Petty in one unforgettable live show. Book the band for festivals, weddings, corporate events, and venues.`,
   keywords: [
-    "Gypsy Fallin’",
+    band.name,
     "Fleetwood Mac tribute",
     "Tom Petty tribute",
     "Stevie Nicks tribute",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     "live music Nashville",
   ],
   openGraph: {
-    title: "Gypsy Fallin’",
+    title: band.name,
     description:
       "The timeless music of Fleetwood Mac and Tom Petty in one unforgettable live show.",
     type: "website",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
         url: "/band-photo-july2026.jpg",
         width: 2006,
         height: 2006,
-        alt: "Gypsy Fallin’",
+        alt: band.name,
       },
     ],
   },
