@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { band, navLinks } from "@/lib/data";
 import Wordmark from "./Wordmark";
 
@@ -38,12 +39,35 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6">
         <a
           href="#"
-          className="text-cream transition-colors hover:text-gold-300"
+          className="opacity-90 transition-opacity hover:opacity-100"
           aria-label={`${band.name} — back to top`}
         >
-          {/* Two short words rather than the four-word name the bar was sized for,
-              so the mark can carry a step more size without crowding the links. */}
-          <Wordmark className="text-sm sm:text-base md:text-lg" />
+          {/* The inline cut of the mark: one line, no rule and no tribute label, which
+              is what makes it survive at bar height where the hero's stacked lockup
+              does not.
+
+              Sized by height. Matching the width of the type it replaced put the mark
+              at 24/28/32px, which read a shade heavy against the links — at 6.6:1 the
+              drawn letters carry far more ink than 18 characters of Bodoni do at the
+              same width. These are that starting point less 15%, so the mark sits back
+              a step and the bar keeps more air, landing around 132 / 159 / 179px wide.
+
+              The anchor fades rather than shifting colour: hover:text-gold-300 did
+              nothing to an image, and the artwork carries its own cream. */}
+          {/* unoptimized, and the file is pre-sized to 512px rather than shipped at
+              full resolution: the mark never renders wider than ~180px, so 512 covers
+              a 2x screen with room to spare and the optimizer has nothing left to save.
+              It also keeps the bar's mark off the /_next/image path, which hung on this
+              particular asset in dev and left the navbar with an empty box. */}
+          <Image
+            src="/logo-inline.png"
+            alt=""
+            width={512}
+            height={77}
+            loading="eager"
+            unoptimized
+            className="h-[20px] w-auto sm:h-[24px] md:h-[27px]"
+          />
         </a>
 
         <div className="hidden items-center gap-8 md:flex">

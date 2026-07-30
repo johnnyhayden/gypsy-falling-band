@@ -32,10 +32,11 @@ export default function Hero() {
             crop DOWN and shows more of the top. */}
         <Image
           src="/band-photo-july2026.jpg"
-          alt="Gypsy Fallin’ performing live"
+          alt={`${band.name} performing live`}
           fill
           className="object-cover object-top hero-over:object-[center_calc(17%_+_40px)]"
-          priority
+          loading="eager"
+          fetchPriority="high"
           quality={85}
           sizes="100vw"
         />
@@ -77,31 +78,47 @@ export default function Hero() {
           {band.city}
         </p>
 
-        {/* The mark is typeset, not an image, so it is sized by font-size — but from
-            the room the photo actually leaves rather than from a breakpoint. With a
-            width-driven cover crop the chin line lands at about 0.35 × viewport width,
-            lifted by 17% of the overflow less the 40px the crop is dropped back down,
-            so the clear band under the faces is 0.83 × height − 0.18 × width − 40.
-            Take 255px off that for the tagline, buttons, bottom padding and the 50px
-            of air under the mark, and what's left is the mark's own height budget.
-            Two stacked lines at 1.05 leading spend about 2.5em of that budget, so the
-            font-size is 0.4 × it — folded into the coefficients below rather than
-            written as a division, because a slash inside a Tailwind arbitrary value
-            reads as the line-height shorthand. A tall window gets the full 128px cap,
-            a short one gets a smaller mark rather than a microscopic one. The 60px
-            floor is the one place the budget gives — at the tightest windows the
-            overlay still runs at (around 1440 × 780) the formula asks for less, and
-            the mark holds and grazes the chin line rather than shrinking to nothing.
+        {/* The mark is the drawn lockup, so it is sized by height — but from the room
+            the photo actually leaves rather than from a breakpoint. With a width-driven
+            cover crop the chin line lands at about 0.35 × viewport width, lifted by 17%
+            of the overflow less the 40px the crop is dropped back down, so the clear
+            band under the faces is 0.83 × height − 0.18 × width − 40. Take 255px off
+            that for the tagline, buttons, bottom padding and the 50px of air under the
+            mark, and what's left is the mark's own height budget — which an image spends
+            directly, where the typeset mark this replaced spent it as 2.5em of font-size
+            across two lines. A tall window gets the full 340px cap, a short one gets a
+            smaller mark rather than a microscopic one. The 150px floor is the one place
+            the budget gives — at the tightest windows the overlay still runs at (around
+            1440 × 780) the formula asks for less, and the mark holds and grazes the chin
+            line rather than shrinking to nothing.
 
-            The shadow is a dark pool rather than the gold glow the image mark carried:
-            hairline Bodoni serifs over a lit photograph need separation from what is
-            behind them, and a glow in the same family as the gold line only blurs it. */}
-        <h1 className="anim-rise anim-delay-1 mt-5 font-heading text-[52px] font-bold leading-[1.05] tracking-[0.08em] text-cream drop-shadow-[0_2px_28px_rgba(11,8,16,0.85)] sm:mt-6 sm:text-[60px] hero-over:mt-0 hero-over:mb-[50px] hero-over:text-[clamp(60px,33.2svh_-_7.2vw_-_102px,128px)]">
-          GYPSY
-          <br />
-          <span className="text-gold-400">FALLIN’</span>
+            The cap is higher than the typeset mark's equivalent 320px because the lockup
+            is the narrower shape — 1.44:1 against roughly 1.9:1 — so it buys height
+            before it runs out of width.
+
+            Width is left to the aspect ratio. Pinning both would let a browser round the
+            hairline strokes off-ratio, and at these sizes the outlines are a pixel wide.
+
+            The shadow is a dark pool rather than a gold glow: hairline serifs over a lit
+            photograph need separation from what is behind them, and a glow in the same
+            family as the mark's own cream only blurs it. */}
+        <h1 className="anim-rise anim-delay-1 mt-5 sm:mt-6 hero-over:mt-0 hero-over:mb-[50px]">
+          <Image
+            src="/logo-lockup.png"
+            alt={`${band.name} — a Fleetwood Mac & Tom Petty tribute`}
+            width={899}
+            height={623}
+            loading="eager"
+            quality={85}
+            sizes="(min-width: 640px) 350px, 290px"
+            className="h-[200px] w-auto drop-shadow-[0_2px_28px_rgba(11,8,16,0.85)] sm:h-[240px] hero-over:h-[clamp(150px,83svh_-_18vw_-_255px,340px)]"
+          />
         </h1>
 
+        {/* This names the acts even though the lockup's own rule already does. The
+            repetition is deliberate: the lockup's tribute line is pixels, and at the
+            tighter windows it shrinks past reading, so this is the one place the two
+            names are always legible and always real text. */}
         <p className="anim-rise anim-delay-2 mt-5 max-w-md font-heading text-base italic leading-relaxed text-cream/80 sm:mt-6 sm:max-w-3xl hero-over:mt-5 hero-over:text-lg">
           Two catalogs. Fleetwood Mac &amp; Tom Petty. Every song you already know.
         </p>

@@ -1,14 +1,19 @@
 /*
- * The wordmark is the band's mark — there is no logo image. It is typeset, so it
- * scales to whatever slot it is dropped into and stays crisp over the photo.
+ * The typeset stand-in for the drawn lockup in the hero. The lockup is a full
+ * three-part composition — name, chain rule, tribute line — and below about 40px
+ * tall its hairline outlines and small-caps tagline stop resolving, so the navbar
+ * and the footer set the name instead of shrinking the artwork past legibility.
  *
- * The two words split across the palette the same way the show does: the name in
- * cream, the second word in gold. Callers set the size.
+ * Cream throughout, with no second colour: the lockup carries no gold, and a gold
+ * word here would contradict the mark this is standing in for. Both call sites put
+ * hover:text-gold-300 on the wrapping anchor, so the accent still arrives on hover.
+ *
+ * Callers set the size.
  */
 export default function Wordmark({ className = "" }: { className?: string }) {
   return (
     <span className={`font-heading tracking-[0.1em] ${className}`}>
-      GYPSY <span className="text-gold-400">FALLIN’</span>
+      THE CHAIN REACTION
     </span>
   );
 }

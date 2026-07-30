@@ -1,9 +1,15 @@
+/*
+ * The band's identity lives here and nowhere else. Three renames have passed
+ * through this site and each one left a stale address or handle behind in a
+ * component that had hardcoded it, so every surface that names the band —
+ * metadata, copy, the wordmark, the booking email — reads from this object.
+ */
 export const band = {
-  name: "Gypsy Fallin’",
+  name: "The Chain Reaction",
   city: "Nashville, Tennessee",
-  email: "johnnyhayden+golddust@gmail.com",
-  instagram: "@gypsyfallin",
-  instagramUrl: "https://www.instagram.com/gypsyfallin",
+  email: "johnnyhayden+chainreaction@gmail.com",
+  instagram: "@thechainreactionband",
+  instagramUrl: "https://www.instagram.com/thechainreactionband",
 };
 
 export const navLinks = [

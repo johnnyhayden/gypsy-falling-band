@@ -7,10 +7,7 @@ import { band } from "@/lib/data";
  * doing the sending — GMAIL_USER is the transport credential, not an address to
  * deliver to.
  */
-const EMAIL_RECIPIENTS = [
-  "johnnyhayden+golddustandwildflowers@gmail.com",
-  "joefortemusic@gmail.com",
-];
+const EMAIL_RECIPIENTS = [band.email, "joefortemusic@gmail.com"];
 
 /*
  * Text-message alerts ride AT&T's email-to-SMS gateway rather than a messaging
