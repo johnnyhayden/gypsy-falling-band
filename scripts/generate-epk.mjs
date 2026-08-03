@@ -235,7 +235,7 @@ async function generateEPK() {
 
   y -= 16;
   page.drawText(
-    "A sampling only - the band plays 30+ songs across both catalogs and the solo years, and builds a set list around each event.",
+    "A sampling only - the band's songbook runs deep across both catalogs and the solo years, and they build a set list around each event.",
     {
       x: 55, y,
       size: 8.5,

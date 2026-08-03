@@ -153,8 +153,8 @@ export default function SetList() {
         </div>
 
         <p className="mt-8 text-center font-body text-sm text-cream/40 md:mt-12">
-          A sampling only — we play 30+ songs across both catalogs and the solo
-          years, and we&rsquo;ll build a set list around your event.
+          A sampling only — the songbook runs deep across both catalogs and the
+          solo years, and we&rsquo;ll build a set list around your event.
         </p>
       </div>
     </section>
