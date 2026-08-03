@@ -19,7 +19,7 @@ export default function Footer() {
               src="/logo-inline.png"
               alt={band.name}
               width={512}
-              height={77}
+              height={88}
               loading="eager"
               unoptimized
               className="mx-auto h-[30px] w-auto md:mx-0 md:h-[33px]"

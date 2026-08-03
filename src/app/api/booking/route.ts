@@ -15,7 +15,7 @@ import { band } from "@/lib/data";
  */
 const EMAIL_RECIPIENTS = [
   band.email,
-  "johnnyhayden+chainreaction@gmail.com",
+  "johnnyhayden+fleetwoodmusiccity@gmail.com",
   "joefortemusic@gmail.com",
 ];
 

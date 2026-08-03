@@ -10,14 +10,14 @@
  * NEXT_PUBLIC_SITE_URL only for preview deploys.
  */
 export const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://thechainreactionband.com";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://fleetwoodmusiccity.com";
 
 export const band = {
-  name: "The Chain Reaction",
+  name: "Fleetwood Music City",
   city: "Nashville, Tennessee",
-  email: "booking@thechainreactionband.com",
-  instagram: "@thechainreactionband",
-  instagramUrl: "https://www.instagram.com/thechainreactionband",
+  email: "booking@fleetwoodmusiccity.com",
+  instagram: "@FleetwoodMusicCity",
+  instagramUrl: "https://www.instagram.com/fleetwoodmusiccity",
 };
 
 export const navLinks = [

@@ -1,6 +1,6 @@
-# The Chain Reaction — Website
+# Fleetwood Music City — Website
 
-Marketing and booking website for **The Chain Reaction**, Nashville's tribute to Fleetwood Mac and Tom Petty. The site's primary goal is to showcase the band and convert visitors into booked events by making it easy to inquire and find the band on social media.
+Marketing and booking website for **Fleetwood Music City**, Nashville's tribute to Fleetwood Mac and Tom Petty. The site's primary goal is to showcase the band and convert visitors into booked events by making it easy to inquire and find the band on social media.
 
 ---
 
@@ -45,9 +45,10 @@ a `BAND` constant at the top of the file. **Update it alongside `data.ts`.**
 
 There are two forms of the mark, and they are not interchangeable:
 
-- **`public/logo-lockup.png`** — the drawn lockup: name, chain rule, and the line "A Fleetwood
-  Mac & Tom Petty tribute". Used in the hero only. Its hairline outlines and small-caps tagline
-  stop resolving below roughly 40px tall.
+- **`public/logo-full.png`** — the drawn lockup: name, wildflower rule, and the line "A Fleetwood
+  Mac & Tom Petty tribute". Used in the hero, and (as the pre-shrunk `logo-full-epk.png` copy) as
+  the EPK's header mark on a dark plate. Its hairline outlines and small-caps tagline stop
+  resolving below roughly 40px tall.
 - **`public/logo-inline.png`** — the inline cut: one line, no rule and no tribute label. Used in
   the navbar and the footer, where it survives at small sizes because it drops the lockup's other
   two parts. It is trimmed to its artwork and pre-sized to 512px wide (it never renders wider than
@@ -70,7 +71,7 @@ for a band whose search traffic is people typing those two act names. Don't drop
 
 1. Visitor fills out the booking form (`Name`, `Email`, `Event Date`, `Venue/Location`, `Event Type`, `Message`)
 2. The form `POST`s to `/api/booking`
-3. The API sends an **HTML email** to every address in `EMAIL_RECIPIENTS` via Nodemailer + Migadu SMTP, sent *as* `booking@thechainreactionband.com` with the visitor's address as `replyTo`
+3. The API sends an **HTML email** to every address in `EMAIL_RECIPIENTS` via Nodemailer + Migadu SMTP, sent *as* `booking@fleetwoodmusiccity.com` with the visitor's address as `replyTo`
 4. The visitor sees a confirmation message; the band is expected to reply within 24 hours
 
 **Recipients** are defined at the top of `src/app/api/booking/route.ts`:
@@ -78,7 +79,7 @@ for a band whose search traffic is people typing those two act names. Don't drop
 ```ts
 const EMAIL_RECIPIENTS = [
   band.email,
-  "johnnyhayden+chainreaction@gmail.com",
+  "johnnyhayden+fleetwoodmusiccity@gmail.com",
   "joefortemusic@gmail.com",
 ];
 ```
@@ -119,7 +120,8 @@ scripts/
 
 public/
 ├── band-photo-july2026.jpg           # Hero photograph
-├── logo-lockup.png                   # Hero mark, trimmed to the artwork — used by the site
+├── logo-full.png                     # Hero mark (full lockup) — used by the site
+├── logo-full-epk.png                 # Same art at 800px — embedded in the EPK PDF
 └── logo-inline.png                   # Navbar mark, trimmed and pre-sized to 512px — used by the site
 
 assets/logos/                         # Source artwork — tracked, but outside public/ so it
@@ -129,7 +131,7 @@ assets/logos/                         # Source artwork — tracked, but outside 
 └── logo_cream_inline_trans.png       # Source for the inline mark, 1536×1024
 
 private/
-└── the-chain-reaction-epk.pdf        # Generated EPK — gitignored, not served
+└── fleetwood-music-city-epk.pdf      # Generated EPK — gitignored, not served
 ```
 
 ---
@@ -137,7 +139,7 @@ private/
 ## Electronic Press Kit
 
 `node scripts/generate-epk.mjs` writes the press kit to
-`private/the-chain-reaction-epk.pdf`. It is generated **outside `public/`** so it is not served,
+`private/fleetwood-music-city-epk.pdf`. It is generated **outside `public/`** so it is not served,
 and the download button in `BookingForm.tsx` is commented out. To publish it: move the PDF into
 `public/` and restore that block.
 
@@ -174,7 +176,7 @@ Create a `.env.local` file in the project root:
 
 ```env
 # Migadu SMTP — booking inquiry emails
-SMTP_USER=booking@thechainreactionband.com
+SMTP_USER=booking@fleetwoodmusiccity.com
 SMTP_PASSWORD=the-mailbox-password
 ```
 
@@ -183,7 +185,7 @@ SMTP_PASSWORD=the-mailbox-password
 Set the same two variables under **Project Settings → Environment Variables**.
 
 `NEXT_PUBLIC_SITE_URL` is optional and normally left unset. `siteUrl` in `src/lib/data.ts`
-already defaults to the live domain, `https://thechainreactionband.com`, which is what feeds
+already defaults to the live domain, `https://fleetwoodmusiccity.com`, which is what feeds
 `metadataBase`, the canonical tag, the OG URLs, `robots.txt` and `sitemap.xml`. Set the variable
 only to point a preview deploy at a different origin.
 
@@ -195,7 +197,7 @@ only to point a preview deploy at a different origin.
 
 - **Purpose:** Delivers HTML-formatted booking inquiry emails to the band's inboxes
 - **Service:** Migadu SMTP via Nodemailer — `smtp.migadu.com:465`, implicit TLS
-- **Auth:** The `booking@thechainreactionband.com` mailbox credentials (`SMTP_USER` / `SMTP_PASSWORD`)
+- **Auth:** The `booking@fleetwoodmusiccity.com` mailbox credentials (`SMTP_USER` / `SMTP_PASSWORD`)
 - **Behavior:** Sent `from` the band's own `booking@` address with the band name as the display name — so the mail aligns with the domain's SPF/DKIM records — and `replyTo` set to the visitor's email so the band can reply directly
 - **Recipients:** every address in `EMAIL_RECIPIENTS` in `src/app/api/booking/route.ts`
 - **Config vars:** `SMTP_USER`, `SMTP_PASSWORD`
@@ -215,7 +217,7 @@ only to point a preview deploy at a different origin.
 
 ### Instagram
 
-- **Purpose:** Links visitors to the band's Instagram profile (`@thechainreactionband`)
+- **Purpose:** Links visitors to the band's Instagram profile (`@FleetwoodMusicCity`)
 - **Location:** Navbar and footer
 - **No API key required** — static link only
 

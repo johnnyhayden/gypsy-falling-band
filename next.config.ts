@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
         has: [
           { type: "host" as const, value: "fleetwoodmac-tompetty-band.vercel.app" },
         ],
-        destination: "https://thechainreactionband.com/:path*",
+        destination: "https://fleetwoodmusiccity.com/:path*",
         permanent: true,
       },
     ];

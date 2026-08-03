@@ -63,7 +63,7 @@ export default function Navbar() {
             src="/logo-inline.png"
             alt=""
             width={512}
-            height={77}
+            height={88}
             loading="eager"
             unoptimized
             className="h-[20px] w-auto sm:h-[24px] md:h-[27px]"

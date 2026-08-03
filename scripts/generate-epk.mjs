@@ -4,8 +4,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// The EPK is not public yet — write it outside public/ so it isn't served.
-const outputDir = path.join(__dirname, "..", "private");
+// The EPK is live — write straight into public/ so the site serves it at
+// /fleetwood-music-city-epk.pdf (linked from the booking section).
+const outputDir = path.join(__dirname, "..", "public");
 
 /*
  * Mirrors `band` in src/lib/data.ts, which is the source of truth — this is a
@@ -20,11 +21,13 @@ const outputDir = path.join(__dirname, "..", "private");
  * strings below throws at encode time.
  */
 const BAND = {
-  name: "The Chain Reaction",
-  nameUpper: "THE CHAIN REACTION",
-  email: "booking@thechainreactionband.com",
-  instagram: "@thechainreactionband",
-  city: "Nashville, TN",
+  name: "Fleetwood Music City",
+  tagline: "A Fleetwood Mac & Tom Petty Tribute",
+  phone: "615-838-4666",
+  email: "booking@FleetwoodMusicCity.com",
+  instagram: "@FleetwoodMusicCity",
+  website: "FleetwoodMusicCity.com",
+  city: "Nashville, Tennessee",
 };
 
 async function generateEPK() {
@@ -37,19 +40,40 @@ async function generateEPK() {
   const helveticaBold = await doc.embedFont(StandardFonts.HelveticaBold);
   const timesItalic = await doc.embedFont(StandardFonts.TimesRomanItalic);
 
-  // Colors
+  // The black-ink variant of the hero lockup (same letterforms, recolored for
+  // light backgrounds — regenerate it from logo-full.png if the mark changes).
+  const logoBytes = fs.readFileSync(
+    path.join(__dirname, "..", "public", "logo-lockup-ink.png")
+  );
+  const logo = await doc.embedPng(logoBytes);
+
+  // Colors — light "printed one-sheet" palette. Gold and wine carry over from
+  // the site; bronze stands in for the site's brighter gold, which washes out
+  // at small sizes on white.
   const gold = rgb(0.722, 0.525, 0.043);
-  const darkGold = rgb(0.831, 0.627, 0.067);
-  const cream = rgb(0.96, 0.94, 0.9);
-  const darkBg = rgb(0.05, 0.05, 0.05);
-  const cardBg = rgb(0.1, 0.1, 0.1);
+  const bronze = rgb(0.55, 0.4, 0.03);
+  const ink = rgb(0.08, 0.07, 0.05);
+  const pageBg = rgb(1, 1, 1);
+  const cardBg = rgb(0.965, 0.955, 0.935);
+  const cardBorder = rgb(0.85, 0.83, 0.79);
   const wine = rgb(0.45, 0.13, 0.25);
-  const dimText = rgb(0.65, 0.63, 0.58);
+  const paper = rgb(0.96, 0.94, 0.9);
+  const dimText = rgb(0.32, 0.3, 0.27);
+
+  const centerText = (text, size, font, y, color) => {
+    page.drawText(text, {
+      x: (width - font.widthOfTextAtSize(text, size)) / 2,
+      y,
+      size,
+      font,
+      color,
+    });
+  };
 
   // === BACKGROUND ===
   page.drawRectangle({
     x: 0, y: 0, width, height,
-    color: darkBg,
+    color: pageBg,
   });
 
   // Top gold accent bar
@@ -58,87 +82,88 @@ async function generateEPK() {
     color: gold,
   });
 
-  // === HEADER ===
-  let y = height - 60;
-
-  const title = BAND.nameUpper;
-  const titleSize = 22;
-  page.drawText(title, {
-    x: 50, y,
-    size: titleSize,
-    font: helveticaBold,
-    color: cream,
+  // === HEADER: LOGO LOCKUP ===
+  // The lockup already carries the band name and the tribute line, so the header
+  // sets only the location strap underneath it as live text.
+  let y = height - 34;
+  const logoW = 176;
+  const logoH = logoW * (logo.height / logo.width);
+  page.drawImage(logo, {
+    x: (width - logoW) / 2,
+    y: y - logoH,
+    width: logoW,
+    height: logoH,
   });
+  y -= logoH + 16;
 
-  y -= 6;
-  // Gold underline, measured off the title rather than hardcoded, so it tracks the
-  // name instead of overshooting it the next time the name changes
-  page.drawRectangle({
-    x: 50, y,
-    width: helveticaBold.widthOfTextAtSize(title, titleSize),
-    height: 1.5,
-    color: gold,
-  });
-
-  y -= 18;
-  page.drawText("ELECTRONIC PRESS KIT", {
-    x: 50, y,
-    size: 10,
-    font: helvetica,
-    color: gold,
-  });
-
-  // Right-aligned contact block
-  const contactX = width - 200;
-  let contactY = height - 55;
-  const contactLines = [BAND.email, BAND.instagram, BAND.city];
-  for (const line of contactLines) {
-    page.drawText(line, {
-      x: contactX, y: contactY,
-      size: 8,
-      font: helvetica,
-      color: dimText,
-    });
-    contactY -= 13;
-  }
+  centerText("NASHVILLE, TENNESSEE   |   PRESS KIT", 9, helvetica, y, gold);
 
   // === DIVIDER ===
-  y -= 20;
+  y -= 16;
   page.drawRectangle({
     x: 50, y, width: width - 100, height: 0.5,
-    color: rgb(0.2, 0.2, 0.2),
-  });
-
-  // === TAGLINE ===
-  y -= 30;
-  page.drawText("The timeless music of Fleetwood Mac and Tom Petty", {
-    x: 50, y,
-    size: 14,
-    font: timesItalic,
-    color: cream,
-  });
-  y -= 20;
-  page.drawText("in one unforgettable live show.", {
-    x: 50, y,
-    size: 14,
-    font: timesItalic,
-    color: darkGold,
+    color: cardBorder,
   });
 
   // === ABOUT CARD ===
-  y -= 35;
-  const aboutCardTop = y;
-  const aboutCardHeight = 155;
+  // Wrap by measurement, not by hand — hand-wrapped lines drifted to two-thirds
+  // of the card width the last time the copy changed.
+  const wrapText = (text, font, size, maxWidth) => {
+    const lines = [];
+    let line = "";
+    for (const word of text.split(" ")) {
+      const candidate = line ? `${line} ${word}` : word;
+      if (font.widthOfTextAtSize(candidate, size) > maxWidth && line) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = candidate;
+      }
+    }
+    if (line) lines.push(line);
+    return lines;
+  };
+
+  const bodyWidth = width - 120; // card inset (60) mirrored on the right
+  const aboutText = [
+    ...wrapText(
+      "Fleetwood Music City is a Nashville-area tribute band celebrating the music of Fleetwood Mac and Tom Petty in one live show. Available for venues, community events, and private bookings throughout Middle TN.",
+      helvetica, 9, bodyWidth
+    ),
+    "",
+    ...wrapText(
+      "Fleetwood Mac is at the heart of the show, with strong female vocals, layered harmonies, and the songs that made the band timeless. The set also draws deeply on Tom Petty favorites, adding energy, variety, and rock-and-roll drive.",
+      helvetica, 9, bodyWidth
+    ),
+  ];
+  const quoteText = wrapText(
+    "\"From the harmonies of Fleetwood Mac to the unmistakable hooks of Tom Petty, the two catalogs come together naturally in a show filled with songs audiences already know and love.\"",
+    timesItalic, 9.5, bodyWidth - 30
+  );
+  const closingText = wrapText(
+    "Fleetwood Music City focuses on the sound and feel of the music with experienced musicians bringing these songs to life with authentic vocals, thoughtful arrangements, and respect for what made them great.",
+    helvetica, 9, bodyWidth
+  );
+
+  // Card height is measured off the copy, not hardcoded — the last rewrite of the
+  // about text left the old fixed-height card clipping two lines.
+  const bodyLineHeight = (lines) =>
+    lines.reduce((h, line) => h + (line === "" ? 6 : 12.5), 0);
+  const aboutCardHeight =
+    14 + 18 + bodyLineHeight(aboutText) + 10 +
+    quoteText.length * 13 + 10 + bodyLineHeight(closingText) + 12;
+
+  y -= 26;
+  const aboutCardTop = y + 14;
   page.drawRectangle({
-    x: 45, y: aboutCardTop - aboutCardHeight + 10,
+    x: 45, y: aboutCardTop - aboutCardHeight,
     width: width - 90, height: aboutCardHeight,
     color: cardBg,
-    borderColor: rgb(0.18, 0.18, 0.18),
+    borderColor: cardBorder,
     borderWidth: 1,
   });
 
-  y -= 5;
-  page.drawText("ABOUT THE BAND", {
+  page.drawText("ABOUT THE SHOW", {
     x: 60, y,
     size: 10,
     font: helveticaBold,
@@ -146,17 +171,6 @@ async function generateEPK() {
   });
 
   y -= 18;
-  const aboutText = [
-    "Built around soaring female vocals, rich harmonies, and the unmistakable sound of",
-    "Fleetwood Mac, the band also delivers a powerful set of Tom Petty favorites that adds",
-    "energy, variety, and plenty of sing-along moments. Solo years land too - \"Edge of",
-    "Seventeen,\" \"Free Fallin',\" and the \"Stop Draggin' My Heart Around\" duet that",
-    "celebrates the musical connection between Stevie Nicks and Tom Petty.",
-    "",
-    `${BAND.name} isn't about impersonation - it's about capturing the sound,`,
-    "spirit, and emotion of two of rock's most beloved catalogs with exceptional",
-    "musicianship, authentic vocals, and a show audiences know from the very first note.",
-  ];
   for (const line of aboutText) {
     if (line === "") { y -= 6; continue; }
     page.drawText(line, {
@@ -165,58 +179,54 @@ async function generateEPK() {
       font: helvetica,
       color: dimText,
     });
+    y -= 12.5;
+  }
+
+  y -= 10;
+  for (const line of quoteText) {
+    centerText(line, 9.5, timesItalic, y, ink);
     y -= 13;
   }
 
-  // === STATS ROW ===
-  // Clears the about card's bottom edge — the cards collide at anything less.
-  y -= 42;
-  const stats = [
-    { value: "6", label: "MUSICIANS" },
-    { value: "2", label: "LEGENDARY ACTS" },
-    { value: "30+", label: "SONGS DEEP" },
-    { value: "2+ HRS", label: "SHOW LENGTH" },
-  ];
-
-  const statWidth = (width - 100) / stats.length;
-  stats.forEach((stat, i) => {
-    const sx = 50 + i * statWidth;
-    // Stat card
-    page.drawRectangle({
-      x: sx + 5, y: y - 30,
-      width: statWidth - 10, height: 45,
-      color: cardBg,
-      borderColor: rgb(0.18, 0.18, 0.18),
-      borderWidth: 1,
-    });
-    page.drawText(stat.value, {
-      x: sx + 15, y: y,
-      size: 18,
-      font: helveticaBold,
-      color: gold,
-    });
-    page.drawText(stat.label, {
-      x: sx + 15, y: y - 20,
-      size: 7,
+  y -= 10;
+  for (const line of closingText) {
+    page.drawText(line, {
+      x: 60, y,
+      size: 9,
       font: helvetica,
       color: dimText,
     });
-  });
+    y -= 12.5;
+  }
 
-  // === SET LIST ===
-  y -= 70;
+  // === SET LIST HIGHLIGHTS ===
+  // Drop from the card's measured bottom edge, not the last text baseline — the
+  // gold marker bar rises 15pt above the title baseline, and a text-relative
+  // drop left it clipping the card border.
+  y = aboutCardTop - aboutCardHeight - 32;
   page.drawRectangle({
     x: 50, y: y - 1, width: 3, height: 16,
     color: gold,
   });
-  page.drawText("SAMPLE SET LIST", {
+  page.drawText("SET LIST HIGHLIGHTS", {
     x: 60, y,
     size: 11,
     font: helveticaBold,
-    color: cream,
+    color: ink,
   });
 
-  y -= 25;
+  y -= 16;
+  page.drawText(
+    "A sampling only - the band plays 30+ songs across both catalogs and the solo years, and builds a set list around each event.",
+    {
+      x: 55, y,
+      size: 8.5,
+      font: timesItalic,
+      color: dimText,
+    }
+  );
+
+  y -= 20;
   // Same order as the set list on the site: Mac, Petty, then the solo years.
   // Keep in sync with setListCategories in src/lib/data.ts.
   const categories = [
@@ -225,8 +235,8 @@ async function generateEPK() {
       songs: ["Dreams", "Go Your Own Way", "Rhiannon", "The Chain", "Gold Dust Woman", "Landslide", "Everywhere", "Don't Stop", "Say You Love Me"],
     },
     {
-      title: "TOM PETTY",
-      songs: ["American Girl", "Mary Jane's Last Dance", "Runnin' Down a Dream", "I Won't Back Down", "Learning to Fly", "Refugee", "Breakdown", "Free Fallin'", "Listen to Her Heart"],
+      title: "TOM PETTY & THE HEARTBREAKERS",
+      songs: ["American Girl", "Mary Jane's Last Dance", "Runnin' Down a Dream", "I Won't Back Down", "Learning to Fly", "Refugee", "Breakdown", "Free Fallin'", "The Waiting"],
     },
     {
       title: "THE SOLO YEARS",
@@ -243,9 +253,9 @@ async function generateEPK() {
 
     page.drawText(cat.title, {
       x: cx + 5, y: cy,
-      size: 8,
+      size: 7.5,
       font: helveticaBold,
-      color: darkGold,
+      color: bronze,
     });
     cy -= 5;
     page.drawRectangle({
@@ -265,68 +275,91 @@ async function generateEPK() {
     });
   });
 
-  // === IDEAL FOR ===
+  // === AVAILABILITY ===
   // Clear the tallest column rather than a fixed drop: 19pt of title and rule,
   // then the songs, then breathing room. A magic number collides once a column grows.
   const tallestColumn = Math.max(...categories.map((c) => c.songs.length));
-  y -= 19 + tallestColumn * songLeading + 16;
+  y -= 19 + tallestColumn * songLeading + 14;
   page.drawRectangle({
     x: 50, y: y - 1, width: 3, height: 16,
     color: gold,
   });
-  page.drawText("IDEAL FOR", {
+  page.drawText("AVAILABILITY", {
     x: 60, y,
     size: 11,
     font: helveticaBold,
-    color: cream,
+    color: ink,
   });
 
-  y -= 22;
-  const idealFor = [
-    ["Festivals & Outdoor Concerts", "Corporate Events & Galas"],
-    ["Weddings & Private Parties", "Venue & Club Bookings"],
-    ["Fundraisers & Charity Events", "College & University Events"],
-  ];
-  idealFor.forEach((row) => {
-    row.forEach((item, i) => {
-      page.drawText(`>  ${item}`, {
-        x: 55 + i * 250, y,
-        size: 9,
-        font: helvetica,
-        color: dimText,
-      });
-    });
-    y -= 16;
-  });
-
-  // === TECHNICAL SPECS ===
-  y -= 20;
-  page.drawRectangle({
-    x: 50, y: y - 1, width: 3, height: 16,
-    color: gold,
-  });
-  page.drawText("TECHNICAL REQUIREMENTS", {
-    x: 60, y,
-    size: 11,
-    font: helveticaBold,
-    color: cream,
-  });
-
-  y -= 22;
-  const techSpecs = [
-    "Full PA and sound reinforcement (band can provide for smaller venues)",
-    "Standard stage plot and input list available upon request",
-    "Minimum stage size: 16' x 12'  •  Standard set length: 2 hours (two sets with break)",
-  ];
-  techSpecs.forEach((spec) => {
-    page.drawText(spec, {
+  y -= 18;
+  page.drawText(
+    "Venue Bookings   •   Corporate Events   •   Festivals   •   Private Parties",
+    {
       x: 55, y,
-      size: 8.5,
+      size: 9,
       font: helvetica,
       color: dimText,
-    });
-    y -= 14;
+    }
+  );
+
+  // === WATCH ===
+  y -= 26;
+  page.drawRectangle({
+    x: 50, y: y - 1, width: 3, height: 16,
+    color: gold,
   });
+  page.drawText("WATCH", {
+    x: 60, y,
+    size: 11,
+    font: helveticaBold,
+    color: ink,
+  });
+
+  y -= 18;
+  page.drawText("Promo 2026:  youtube.com/watch?v=kQ_xaoJmY9o", {
+    x: 55, y,
+    size: 9,
+    font: helvetica,
+    color: bronze,
+  });
+
+  // === CONTACT & BOOKING ===
+  y -= 26;
+  page.drawRectangle({
+    x: 50, y: y - 1, width: 3, height: 16,
+    color: gold,
+  });
+  page.drawText("CONTACT & BOOKING", {
+    x: 60, y,
+    size: 11,
+    font: helveticaBold,
+    color: ink,
+  });
+
+  y -= 20;
+  // Label-over-value columns, hand-placed: the email is the wide one, so the
+  // columns are uneven rather than a quarter-width grid.
+  const contactCols = [
+    { label: "PHONE", value: BAND.phone, x: 55 },
+    { label: "EMAIL", value: BAND.email, x: 150 },
+    { label: "INSTAGRAM", value: BAND.instagram, x: 320 },
+    { label: "WEBSITE", value: BAND.website, x: 435 },
+  ];
+  contactCols.forEach((col) => {
+    page.drawText(col.label, {
+      x: col.x, y,
+      size: 6.5,
+      font: helveticaBold,
+      color: gold,
+    });
+    page.drawText(col.value, {
+      x: col.x, y: y - 12,
+      size: 8.5,
+      font: helvetica,
+      color: ink,
+    });
+  });
+  y -= 12;
 
   // === FOOTER ===
   // Bottom gold bar
@@ -341,13 +374,13 @@ async function generateEPK() {
     color: wine,
   });
 
-  page.drawText("BOOKING & INQUIRIES", {
+  page.drawText(`${BAND.name.toUpperCase()}  •  ${BAND.tagline.toUpperCase()}`, {
     x: 50, y: 22,
     size: 8,
     font: helveticaBold,
-    color: cream,
+    color: paper,
   });
-  page.drawText(`${BAND.email}   |   ${BAND.instagram}   |   ${BAND.city}`, {
+  page.drawText(`© 2026 ${BAND.name}. All rights reserved.   |   ${BAND.website}`, {
     x: 50, y: 10,
     size: 7.5,
     font: helvetica,
@@ -357,7 +390,7 @@ async function generateEPK() {
   // Save
   const pdfBytes = await doc.save();
   fs.mkdirSync(outputDir, { recursive: true });
-  const outputPath = path.join(outputDir, "the-chain-reaction-epk.pdf");
+  const outputPath = path.join(outputDir, "fleetwood-music-city-epk.pdf");
   fs.writeFileSync(outputPath, pdfBytes);
   console.log(`EPK saved to ${outputPath} (${(pdfBytes.length / 1024).toFixed(1)} KB)`);
 }

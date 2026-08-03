@@ -13,7 +13,7 @@
 export default function Wordmark({ className = "" }: { className?: string }) {
   return (
     <span className={`font-heading tracking-[0.1em] ${className}`}>
-      THE CHAIN REACTION
+      FLEETWOOD MUSIC CITY
     </span>
   );
 }

@@ -83,8 +83,9 @@ export default function Hero() {
             cover crop the chin line lands at about 0.35 × viewport width, lifted by 17%
             of the overflow less the 40px the crop is dropped back down, so the clear
             band under the faces is 0.83 × height − 0.18 × width − 40. Take 255px off
-            that for the tagline, buttons, bottom padding and the 50px of air under the
-            mark, and what's left is the mark's own height budget — which an image spends
+            that for the tagline, buttons, bottom padding and the air under the mark
+            (30px now — trimmed from the original 50 to pull the mark toward the
+            tagline), and what's left is the mark's own height budget — which an image spends
             directly, where the typeset mark this replaced spent it as 2.5em of font-size
             across two lines. A tall window gets the full 340px cap, a short one gets a
             smaller mark rather than a microscopic one. The 150px floor is the one place
@@ -93,7 +94,7 @@ export default function Hero() {
             line rather than shrinking to nothing.
 
             The cap is higher than the typeset mark's equivalent 320px because the lockup
-            is the narrower shape — 1.44:1 against roughly 1.9:1 — so it buys height
+            is the narrower shape — 1.5:1 against roughly 1.9:1 — so it buys height
             before it runs out of width.
 
             Width is left to the aspect ratio. Pinning both would let a browser round the
@@ -102,16 +103,16 @@ export default function Hero() {
             The shadow is a dark pool rather than a gold glow: hairline serifs over a lit
             photograph need separation from what is behind them, and a glow in the same
             family as the mark's own cream only blurs it. */}
-        <h1 className="anim-rise anim-delay-1 mt-5 sm:mt-6 hero-over:mt-0 hero-over:mb-[50px]">
+        <h1 className="anim-rise anim-delay-1 mt-5 sm:mt-6 hero-over:mt-0 hero-over:mb-[30px]">
           <Image
-            src="/logo-lockup.png"
+            src="/logo-full.png"
             alt={`${band.name} — a Fleetwood Mac & Tom Petty tribute`}
-            width={899}
-            height={623}
+            width={1536}
+            height={1024}
             loading="eager"
             quality={85}
-            sizes="(min-width: 640px) 350px, 290px"
-            className="h-[200px] w-auto drop-shadow-[0_2px_28px_rgba(11,8,16,0.85)] sm:h-[240px] hero-over:h-[clamp(150px,83svh_-_18vw_-_255px,340px)]"
+            sizes="(min-width: 640px) 374px, 310px"
+            className="h-[214px] w-auto drop-shadow-[0_2px_28px_rgba(11,8,16,0.85)] sm:h-[257px] hero-over:h-[clamp(161px,88svh_-_19vw_-_273px,364px)]"
           />
         </h1>
 
