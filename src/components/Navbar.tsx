@@ -49,8 +49,8 @@ export default function Navbar() {
               Sized by height. Matching the width of the type it replaced put the mark
               at 24/28/32px, which read a shade heavy against the links — at 6.6:1 the
               drawn letters carry far more ink than 18 characters of Bodoni do at the
-              same width. These are that starting point less 15%, so the mark sits back
-              a step and the bar keeps more air, landing around 132 / 159 / 179px wide.
+              same width. These are that starting point less 15%, then nudged back up
+              10% (22/26/30px), landing around 145 / 172 / 197px wide.
 
               The anchor fades rather than shifting colour: hover:text-gold-300 did
               nothing to an image, and the artwork carries its own cream. */}
@@ -66,7 +66,7 @@ export default function Navbar() {
             height={88}
             loading="eager"
             unoptimized
-            className="h-[20px] w-auto sm:h-[24px] md:h-[27px]"
+            className="h-[22px] w-auto sm:h-[26px] md:h-[30px]"
           />
         </a>
 

@@ -1,4 +1,4 @@
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import { PDFDocument, PDFName, PDFString, rgb, StandardFonts } from "pdf-lib";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -59,6 +59,24 @@ async function generateEPK() {
   const wine = rgb(0.45, 0.13, 0.25);
   const paper = rgb(0.96, 0.94, 0.9);
   const dimText = rgb(0.32, 0.3, 0.27);
+
+  // pdf-lib has no high-level link API, so clickable regions are raw Link
+  // annotations. Rects are in page coordinates off the text baseline; the small
+  // reach below (2) and above (size + 1) covers descenders and cap height.
+  const linkAnnots = [];
+  const addLink = (x, baselineY, w, size, url) => {
+    linkAnnots.push(
+      doc.context.register(
+        doc.context.obj({
+          Type: "Annot",
+          Subtype: "Link",
+          Rect: [x, baselineY - 2, x + w, baselineY + size + 1],
+          Border: [0, 0, 0],
+          A: { Type: "Action", S: "URI", URI: PDFString.of(url) },
+        })
+      )
+    );
+  };
 
   const centerText = (text, size, font, y, color) => {
     page.drawText(text, {
@@ -316,12 +334,19 @@ async function generateEPK() {
   });
 
   y -= 18;
-  page.drawText("Promo 2026:  youtube.com/watch?v=kQ_xaoJmY9o", {
+  const watchPrefix = "Promo 2026:  ";
+  const watchUrl = "youtube.com/watch?v=kQ_xaoJmY9o";
+  page.drawText(watchPrefix + watchUrl, {
     x: 55, y,
     size: 9,
     font: helvetica,
     color: bronze,
   });
+  addLink(
+    55 + helvetica.widthOfTextAtSize(watchPrefix, 9), y,
+    helvetica.widthOfTextAtSize(watchUrl, 9), 9,
+    `https://www.${watchUrl}`
+  );
 
   // === CONTACT & BOOKING ===
   y -= 26;
@@ -340,10 +365,10 @@ async function generateEPK() {
   // Label-over-value columns, hand-placed: the email is the wide one, so the
   // columns are uneven rather than a quarter-width grid.
   const contactCols = [
-    { label: "PHONE", value: BAND.phone, x: 55 },
-    { label: "EMAIL", value: BAND.email, x: 150 },
-    { label: "INSTAGRAM", value: BAND.instagram, x: 320 },
-    { label: "WEBSITE", value: BAND.website, x: 435 },
+    { label: "PHONE", value: BAND.phone, x: 55, href: `tel:+1${BAND.phone.replaceAll("-", "")}` },
+    { label: "EMAIL", value: BAND.email, x: 150, href: `mailto:${BAND.email}` },
+    { label: "INSTAGRAM", value: BAND.instagram, x: 320, href: `https://www.instagram.com/${BAND.instagram.slice(1)}` },
+    { label: "WEBSITE", value: BAND.website, x: 435, href: `https://${BAND.website}` },
   ];
   contactCols.forEach((col) => {
     page.drawText(col.label, {
@@ -358,6 +383,7 @@ async function generateEPK() {
       font: helvetica,
       color: ink,
     });
+    addLink(col.x, y - 12, helvetica.widthOfTextAtSize(col.value, 8.5), 8.5, col.href);
   });
   y -= 12;
 
@@ -386,6 +412,9 @@ async function generateEPK() {
     font: helvetica,
     color: rgb(0.85, 0.8, 0.75),
   });
+
+  // Attach the collected link annotations to the page.
+  page.node.set(PDFName.of("Annots"), doc.context.obj(linkAnnots));
 
   // Save
   const pdfBytes = await doc.save();
